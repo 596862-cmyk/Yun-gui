@@ -654,20 +654,11 @@
                     setTimeout(() => { showGraduationCelebration(); localStorage.setItem('graduationCelebrated', 'true'); }, 1000);
                 }
             }
+            
             function openExternalLink(url) {
-                const modal = document.getElementById('celebrationModal');
-                modal.querySelector('h3').textContent = '🔗 開啟外部連結';
-                modal.querySelector('.text-6xl').textContent = '📋';
-                const text = modal.querySelector('#celebrationText');
-                text.innerHTML = `<div class="text-left"><p class="mb-3">請手動開啟連結：</p><div class="bg-gray-100 p-3 rounded-lg mb-3 text-sm break-all">${url}</div><p class="text-sm text-gray-600">連結已複製到剪貼簿</p></div>`;
-                navigator.clipboard.writeText(url).catch(() => {
-                    text.innerHTML = `<div class="text-left"><p class="mb-3">請手動複製連結：</p><div class="bg-gray-100 p-3 rounded-lg mb-3 text-sm break-all select-all">${url}</div></div>`;
-                });
-                modal.querySelector('button').textContent = '知道了';
-                modal.classList.add('flex');
-                modal.classList.remove('hidden');
-                setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
+                window.open(url, '_blank', 'noopener,noreferrer');
             }
+
             function getAdminPassword() { return localStorage.getItem('adminPassword') || 'bni2025'; }
             function setAdminPassword(newPassword) { localStorage.setItem('adminPassword', newPassword); }
             function showAdminLogin() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminLoginScreen').classList.add('flex'); document.getElementById('adminLoginScreen').classList.remove('hidden');}
@@ -831,7 +822,6 @@
             }
             window.resetMemberPassword = resetMemberPassword;
 
-            // ★★★ 體驗優化 (START) ★★★
             let currentlyEditingMember = null;
             
             function _renderAdminTasks(member, container) {
@@ -880,7 +870,7 @@
                 if (!currentlyEditingMember || currentlyEditingMember.id !== memberId) return;
 
                 const contentWrapper = document.getElementById('memberTaskModalContentWrapper');
-                const scrollPosition = contentWrapper.scrollTop; // 記住捲動位置
+                const scrollPosition = contentWrapper.scrollTop;
                 
                 const taskIndex = currentlyEditingMember.tasks.findIndex(t => t.id === taskId);
                 
@@ -907,7 +897,7 @@
                     alert('更新失敗: ' + error.message);
                 } else {
                     _renderAdminTasks(currentlyEditingMember, document.getElementById('memberTaskModalContent'));
-                    contentWrapper.scrollTop = scrollPosition; // 恢復捲動位置
+                    contentWrapper.scrollTop = scrollPosition;
                 }
             }
             window.adminUpdateTask = adminUpdateTask;
@@ -919,7 +909,6 @@
                 currentlyEditingMember = null;
                 showMemberManagement();
             }
-            // ★★★ 體驗優化 (END) ★★★
 
             function showPasswordSettings() { hideAdminSections(); document.getElementById('passwordSettingsSection').classList.remove('hidden'); }
             function changeAdminPassword() {
