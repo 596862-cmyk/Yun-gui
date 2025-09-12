@@ -836,26 +836,23 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
-                                    <button type="button" onclick="editMember(${member.id}, '${member.name}', '${member.industry}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改資料</button>
+                                    <button type="button" onclick="editMember(${member.id}, '${escapeHTML(member.name)}', '${escapeHTML(member.industry)}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改資料</button>
                                     <button type="button" onclick="showMemberTasksModal(${member.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">管理任務</button>
-                                    <button type="button" onclick="resetMemberPassword(${member.id}, '${member.name}')" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm">重設密碼</button>
-                                    <button type="button" onclick="deleteMember(${member.id}, '${member.name}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除導生</button>
+                                    <button type="button" onclick="resetMemberPassword(${member.id}, '${escapeHTML(member.name)}')" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm">重設密碼</button>
+                                    <button type="button" onclick="deleteMember(${member.id}, '${escapeHTML(member.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除導生</button>
                                 </div>
                             </div>
                         </div>`;
                 }).join('');
             }
 
-            // ★★★ 新增：修改導生資料功能 ★★★
             async function editMember(memberId, currentName, currentIndustry) {
                 const newName = prompt("請輸入導生新姓名：", currentName);
                 if (newName === null || newName.trim() === '') {
-                    // User cancelled or entered empty name
                     return;
                 }
-
                 const newIndustry = prompt("請輸入導生新行業別：", currentIndustry);
-                if (newIndustry === null) return; // User cancelled
+                if (newIndustry === null) return;
 
                 const { error } = await supabaseClient
                     .from('members')
@@ -870,7 +867,6 @@
                 }
             }
             window.editMember = editMember;
-
 
             async function deleteMember(memberId, memberName) {
                 if (confirm(`⚠️ 確定要刪除導生 ${memberName} 嗎？\n此操作將永久刪除雲端資料，無法復原！`)) {
@@ -1000,23 +996,14 @@
             }
             
             function clearAllData() {
-                const prankMessages = [
-                    "搭咩!", "真的不行啦～", "No way!", "Stop clicking me!", "你以為這樣有用嗎？",
-                    "嗶嗶！偵測到惡意操作", "再按我要叫警察了喔", "森七七", "手指不酸嗎？", "放棄吧，人類",
-                    "第11次了...", "你是不是很閒", "好吧，我考慮一下...", "考慮結果：不行", "Just... stop.",
-                    "我數到三喔... 一...", "二...", "... 二點五 ...", "... 二點八七 ...", "算了，你繼續",
-                    "嘿，你還在啊", "聽說屏東夜市很好逛", "不要再點了，去逛夜市啦", "再點我就... 假裝當機喔", "一半了，恭喜！(並沒有)",
-                    "藍屏警告... ", "開玩笑的 :P ", "Good morning BNI!", "付出者收穫! ", "你現在正在騷擾它",
-                    "施主，回頭是岸", "你的毅力讓我感動", "但我還是不能讓你刪", "不然你請我喝杯咖啡？", "想得美",
-                    "想知道主席喜歡誰嗎? ", "提示：男的! ", "提示：也不是女的! ", "好了，不鬧了", "真的啦，不要點了",
-                    "倒數十次... ", "九... ", "八... ", "你真的很堅持欸 ", "六... ",
-                    "五... ", "四...", "準備回大廳 ", "二... ", "最後一次！"
-                ];
-
-                for (let i = 0; i < prankMessages.length; i++) {
-                    alert(prankMessages[i]);
-                }
+                const prankMessages = [ "搭咩!", "真的不行啦～", "No way!", "Stop clicking me!", "你以為這樣有用嗎？", "嗶嗶！偵測到惡意操作", "再按我要叫警察了喔", "森七七", "手指不酸嗎？", "放棄吧，人類", "第11次了...", "你是不是很閒", "好吧，我考慮一下...", "考慮結果：不行", "Just... stop.", "我數到三喔... 一...", "二...", "... 二點五 ...", "... 二點八七 ...", "算了，你繼續", "嘿，你還在啊", "聽說屏東夜市很好逛", "不要再點了，去逛夜市啦", "再點我就... 假裝當機喔", "一半了，恭喜！(並沒有)", "藍屏警告... ", "開玩笑的 :P ", "Good morning BNI!", "付出者收穫! ", "你現在正在騷擾它", "施主，回頭是岸", "你的毅力讓我感動", "但我還是不能讓你刪", "不然你請我喝杯咖啡？", "想得美", "想知道主席喜歡誰嗎? ", "提示：男的! ", "提示：也不是女的! ", "好了，不鬧了", "真的啦，不要點了", "倒數十次... ", "九... ", "八... ", "你真的很堅持欸 ", "六... ", "五... ", "四...", "準備回大廳 ", "二... ", "最後一次！" ];
+                for (let i = 0; i < prankMessages.length; i++) { alert(prankMessages[i]); }
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
+            }
+            
+            function escapeHTML(str) {
+                if (typeof str !== 'string') return str;
+                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             }
 
             // ★★★ 來賓名單功能 (JS) START ★★★
@@ -1044,9 +1031,9 @@
                                 <p class="text-yellow-300 text-sm">加入意願：${guest.interest_level}</p>
                             </div>
                             <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
-                                <button type="button" onclick="editGuest(${guest.id}, '${guest.name}', '${guest.profession}', '${guest.referrer}', '${guest.interest_level}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
-                                <button type="button" onclick="promoteGuestToMember(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
-                                <button type="button" onclick="deleteGuest(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                                <button type="button" onclick="editGuest(${guest.id}, '${escapeHTML(guest.name)}', '${escapeHTML(guest.profession)}', '${escapeHTML(guest.referrer)}', '${guest.interest_level}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
+                                <button type="button" onclick="promoteGuestToMember(${guest.id}, '${escapeHTML(guest.name)}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
+                                <button type="button" onclick="deleteGuest(${guest.id}, '${escapeHTML(guest.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
                             </div>
                         </div>
                     </div>`).join('');
@@ -1105,14 +1092,13 @@
                     document.getElementById('guestName').value = '';
                     document.getElementById('guestProfession').value = '';
                     document.getElementById('guestReferrer').value = '';
-                    showPublicGuestList(); // Refresh the list
+                    showPublicGuestList();
                 }
             }
-
-            // ★★★ 新增：修改來賓資料功能 ★★★
+            
             async function editGuest(guestId, currentName, currentProfession, currentReferrer, currentInterest) {
                 const newName = prompt("請輸入新的來賓姓名：", currentName);
-                if (newName === null || newName.trim() === '') return; // Canceled or empty
+                if (newName === null || newName.trim() === '') return;
 
                 const newProfession = prompt("請輸入新的專業別：", currentProfession);
                 if (newProfession === null) return;
@@ -1138,8 +1124,8 @@
                     alert('更新來賓資料失敗：' + error.message);
                 } else {
                     alert('來賓資料已成功更新！');
-                    showGuestList(); // Refresh the admin list
-                    showPublicGuestList(); // Refresh the public list
+                    showGuestList();
+                    showPublicGuestList();
                 }
             }
             window.editGuest = editGuest;
