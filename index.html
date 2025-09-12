@@ -63,16 +63,16 @@
             </div>
 
             <div class="flex justify-center mb-8">
-                 <button type="button" id="toggleGuestSectionBtn" class="w-full max-w-md bg-teal-600/50 hover:bg-teal-500/50 text-white py-3 rounded-lg font-semibold transition-all text-lg">
-                    📝 BNI 訪客登記
+                 <button type="button" id="toggleGuestFormBtn" class="w-full max-w-md bg-teal-600/50 hover:bg-teal-500/50 text-white py-3 rounded-lg font-semibold transition-all text-lg">
+                    📝 我要登記為來賓
                 </button>
             </div>
-
-            <div id="guestSection" class="hidden">
+            
+            <div id="guestFormContainer" class="hidden">
                 <div class="flex justify-center mb-8">
                     <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full border border-white/20">
-                        <h3 class="text-2xl font-semibold text-white mb-6 text-center">訪客登記表</h3>
-                        <div class="space-y-4" id="guestForm">
+                        <h3 class="text-2xl font-semibold text-white mb-6 text-center">來賓登記表</h3>
+                        <div class="space-y-4">
                              <input type="text" id="guestName" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的姓名">
                              <input type="text" id="guestProfession" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的專業別">
                              <input type="text" id="guestReferrer" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="介紹人">
@@ -87,10 +87,12 @@
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+            <div id="publicGuestListSection" class="mb-8">
+                 <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 max-w-4xl mx-auto">
                     <div class="text-center mb-6">
-                        <h2 class="text-2xl font-bold text-white mb-2">👋 最新訪客</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">👋 最新來賓</h2>
                     </div>
                     <div id="publicGuestListContainer" class="space-y-3">
                         </div>
@@ -301,7 +303,7 @@
             'use strict';
             
             const SUPABASE_URL = 'https://hdssnsnkagfjfbuvgfkn.supabase.co'; 
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhkc3Nuc25rYWdmamZidXZnZmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MjAyMDksImV4cCI6MjA3MzE5NjIwOX0.UoSKuEbguyE-I2j8gRO_mclOffwkV6WFLwayjrkFsuY'; 
+            const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY'; // ★★★ 請記得換成您自己的 KEY ★★★
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             
             let currentMember = null;
@@ -991,7 +993,6 @@
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
 
-            // ★★★ 新增來賓名單功能 (JS) START ★★★
             async function showGuestList() {
                 hideAdminSections();
                 const container = document.getElementById('adminGuestListContainer');
@@ -1081,7 +1082,6 @@
                     } else {
                         alert('刪除成功！');
                         showPublicGuestList();
-                        // If admin is logged in, also refresh their view if it's open
                         if (!document.getElementById('adminPanelScreen').classList.contains('hidden')) {
                             showGuestList();
                         }
@@ -1093,15 +1093,12 @@
             async function promoteGuestToMember(guestId, guestName) {
                 if (!confirm(`確定要將來賓 ${guestName} 轉為正式導生嗎？\n此動作會將其從來賓名單中移除。`)) return;
 
-                // 1. 取得來賓資料
                 const { data: guest, error: fetchError } = await supabaseClient.from('guests').select('*').eq('id', guestId).single();
                 if (fetchError || !guest) return alert('找不到來賓資料，無法轉換。');
                 
-                // 2. 檢查導生是否已存在
                 const { data: existingMember } = await supabaseClient.from('members').select('id').eq('name', guest.name).single();
                 if (existingMember) return alert(`轉換失敗：名為 ${guest.name} 的導生已經存在。`);
 
-                // 3. 新增至導生名單
                 const { error: insertError } = await supabaseClient.from('members').insert({
                     name: guest.name,
                     industry: guest.profession,
@@ -1109,15 +1106,13 @@
                 });
                 if (insertError) return alert(`新增至導生名單時失敗：${insertError.message}`);
 
-                // 4. 從來賓名單刪除
                 const { error: deleteError } = await supabaseClient.from('guests').delete().eq('id', guestId);
                 if (deleteError) return alert(`已成功新增為導生，但從來賓名單刪除時失敗：${deleteError.message}\n請手動刪除。`);
                 
                 alert(`已成功將 ${guestName} 轉為導生！`);
-                showGuestList(); // 刷新後台來賓列表
+                showGuestList();
             }
             window.promoteGuestToMember = promoteGuestToMember;
-            // ★★★ 新增來賓名單功能 (JS) END ★★★
 
             function showPasswordSettings() { hideAdminSections(); document.getElementById('passwordSettingsSection').classList.remove('hidden'); }
             function changeAdminPassword() {
@@ -1131,26 +1126,6 @@
                 document.getElementById('newAdminPassword').value = '';
             }
             
-            function clearAllData() {
-                const prankMessages = [
-                    "搭咩!", "真的不行啦～", "No way!", "Stop clicking me!", "你以為這樣有用嗎？",
-                    "嗶嗶！偵測到惡意操作", "再按我要叫警察了喔", "森七七", "手指不酸嗎？", "放棄吧，人類",
-                    "第11次了...", "你是不是很閒", "好吧，我考慮一下...", "考慮結果：不行", "Just... stop.",
-                    "我數到三喔... 一...", "二...", "... 二點五 ...", "... 二點八七 ...", "算了，你繼續",
-                    "嘿，你還在啊", "聽說屏東夜市很好逛", "不要再點了，去逛夜市啦", "再點我就... 假裝當機喔", "一半了，恭喜！(並沒有)",
-                    "藍屏警告... ", "開玩笑的 :P ", "Good morning BNI!", "付出者收穫! ", "你現在正在騷擾它",
-                    "施主，回頭是岸", "你的毅力讓我感動", "但我還是不能讓你刪", "不然你請我喝杯咖啡？", "想得美",
-                    "想知道主席喜歡誰嗎? ", "提示：男的! ", "提示：也不是女的! ", "好了，不鬧了", "真的啦，不要點了",
-                    "倒數十次... ", "九... ", "八... ", "你真的很堅持欸 ", "六... ",
-                    "五... ", "四...", "準備回大廳 ", "二... ", "最後一次！"
-                ];
-
-                for (let i = 0; i < prankMessages.length; i++) {
-                    alert(prankMessages[i]);
-                }
-                alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
-            }
-
             const updateFontSize = (change) => {
                 const rootElement = document.documentElement;
                 const currentSize = parseFloat(window.getComputedStyle(rootElement).fontSize);
@@ -1185,20 +1160,18 @@
                 document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
                 document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
 
-                // ★★★ 新增來賓名單功能 (事件監聽) START ★★★
                 document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
                     document.getElementById('guestSection').classList.toggle('hidden');
                 });
                 document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
                 document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
-                // ★★★ 新增來賓名單功能 (事件監聽) END ★★★
 
                 const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
                 document.getElementById('totalTasks').textContent = requiredTotal - 1;
                 
                 checkSession();
                 showLoginRanking();
-                showPublicGuestList(); // 頁面載入時就顯示公開來賓列表
+                showPublicGuestList(); 
             });
 
         })();
