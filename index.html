@@ -836,10 +836,10 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
-                                    <button type="button" onclick="editMember(${member.id}, '${escapeForJS(member.name)}', '${escapeForJS(member.industry)}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改資料</button>
+                                    <button type="button" onclick="editMember(${member.id}, '${escapeHTML(member.name)}', '${escapeHTML(member.industry)}')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改資料</button>
                                     <button type="button" onclick="showMemberTasksModal(${member.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">管理任務</button>
-                                    <button type="button" onclick="resetMemberPassword(${member.id}, '${escapeForJS(member.name)}')" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm">重設密碼</button>
-                                    <button type="button" onclick="deleteMember(${member.id}, '${escapeForJS(member.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除導生</button>
+                                    <button type="button" onclick="resetMemberPassword(${member.id}, '${escapeHTML(member.name)}')" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm">重設密碼</button>
+                                    <button type="button" onclick="deleteMember(${member.id}, '${escapeHTML(member.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除導生</button>
                                 </div>
                             </div>
                         </div>`;
@@ -1001,9 +1001,9 @@
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
             
-            function escapeForJS(str) {
+            function escapeHTML(str) {
                 if (typeof str !== 'string') return str;
-                return str.replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/"/g, '\\"');
+                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             }
 
             // ★★★ 來賓名單功能 (JS) START ★★★
@@ -1031,9 +1031,9 @@
                                 <p class="text-yellow-300 text-sm">加入意願：${guest.interest_level}</p>
                             </div>
                             <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
-                                <button type="button" onclick="editGuest(${guest.id}, '${escapeForJS(guest.name)}', '${escapeForJS(guest.profession)}', '${escapeForJS(guest.referrer)}', '${guest.interest_level}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
-                                <button type="button" onclick="promoteGuestToMember(${guest.id}, '${escapeForJS(guest.name)}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
-                                <button type="button" onclick="deleteGuest(${guest.id}, '${escapeForJS(guest.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                                <button type="button" onclick="editGuest(${guest.id}, '${escapeHTML(guest.name)}', '${escapeHTML(guest.profession)}', '${escapeHTML(guest.referrer)}', '${guest.interest_level}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
+                                <button type="button" onclick="promoteGuestToMember(${guest.id}, '${escapeHTML(guest.name)}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
+                                <button type="button" onclick="deleteGuest(${guest.id}, '${escapeHTML(guest.name)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
                             </div>
                         </div>
                     </div>`).join('');
@@ -1181,53 +1181,45 @@
             };
             
             document.addEventListener('DOMContentLoaded', function() {
-                try {
-                    document.getElementById('loginButton')?.addEventListener('click', handleLogin);
-                    document.getElementById('memberName')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
-                    document.getElementById('memberPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
-                    document.getElementById('showAdminBtn')?.addEventListener('click', showAdminLogin);
-                    document.getElementById('hideAdminBtn')?.addEventListener('click', hideAdminLogin);
-                    document.getElementById('adminLoginBtn')?.addEventListener('click', handleAdminLogin);
-                    document.getElementById('adminPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
-                    document.getElementById('showAddMemberBtn')?.addEventListener('click', showAddMember);
-                    document.getElementById('createMemberBtn')?.addEventListener('click', createMember);
-                    document.getElementById('showMemberListBtn')?.addEventListener('click', showMemberList);
-                    document.getElementById('showMemberMgmtBtn')?.addEventListener('click', showMemberManagement);
-                    document.getElementById('showPasswordSettingsBtn')?.addEventListener('click', showPasswordSettings);
-                    document.getElementById('changePasswordBtn')?.addEventListener('click', changeAdminPassword);
-                    document.getElementById('clearAllDataBtn')?.addEventListener('click', clearAllData);
-                    document.getElementById('hideAdminPanelBtn')?.addEventListener('click', hideAdminPanel);
-                    document.querySelectorAll('.hide-section-btn').forEach(btn => btn.addEventListener('click', hideAdminSections));
-                    document.getElementById('logoutBtn')?.addEventListener('click', logout);
-                    document.getElementById('closeCelebrationBtn')?.addEventListener('click', closeCelebration);
-                    document.getElementById('closeMemberTaskBtn')?.addEventListener('click', closeMemberTaskModal);
-                    document.querySelector('[data-category="all"]')?.addEventListener('click', () => filterTasks('all'));
-                    document.getElementById('increaseFont')?.addEventListener('click', () => updateFontSize(1));
-                    document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
-                    document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
+                document.getElementById('loginButton')?.addEventListener('click', handleLogin);
+                document.getElementById('memberName')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
+                document.getElementById('memberPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
+                document.getElementById('showAdminBtn')?.addEventListener('click', showAdminLogin);
+                document.getElementById('hideAdminBtn')?.addEventListener('click', hideAdminLogin);
+                document.getElementById('adminLoginBtn')?.addEventListener('click', handleAdminLogin);
+                document.getElementById('adminPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleAdminLogin(); });
+                document.getElementById('showAddMemberBtn')?.addEventListener('click', showAddMember);
+                document.getElementById('createMemberBtn')?.addEventListener('click', createMember);
+                document.getElementById('showMemberListBtn')?.addEventListener('click', showMemberList);
+                document.getElementById('showMemberMgmtBtn')?.addEventListener('click', showMemberManagement);
+                document.getElementById('showPasswordSettingsBtn')?.addEventListener('click', showPasswordSettings);
+                document.getElementById('changePasswordBtn')?.addEventListener('click', changeAdminPassword);
+                document.getElementById('clearAllDataBtn')?.addEventListener('click', clearAllData);
+                document.getElementById('hideAdminPanelBtn')?.addEventListener('click', hideAdminPanel);
+                document.querySelectorAll('.hide-section-btn').forEach(btn => btn.addEventListener('click', hideAdminSections));
+                document.getElementById('logoutBtn')?.addEventListener('click', logout);
+                document.getElementById('closeCelebrationBtn')?.addEventListener('click', closeCelebration);
+                document.getElementById('closeMemberTaskBtn')?.addEventListener('click', closeMemberTaskModal);
+                document.querySelector('[data-category="all"]')?.addEventListener('click', () => filterTasks('all'));
+                document.getElementById('increaseFont')?.addEventListener('click', () => updateFontSize(1));
+                document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
+                document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
 
-                    document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
-                        document.getElementById('guestFormSection').classList.toggle('hidden');
-                    });
-                    document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
-                    document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
+                document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
+                    document.getElementById('guestFormSection').classList.toggle('hidden');
+                });
+                document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
+                document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
 
-                    const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
-                    document.getElementById('totalTasks').textContent = requiredTotal - 1;
-                    
-                    checkSession();
-                    showLoginRanking();
-                    showPublicGuestList(); 
-                } catch (e) {
-                    console.error("初始化腳本時發生錯誤:", e);
-                    document.body.innerHTML = `<div style="color:white; padding: 2rem; text-align:center;"><h1>頁面載入失敗</h1><p>請檢查Console中的錯誤訊息。</p><pre style="color:red; text-align:left; background:black; padding:1rem; border-radius:8px;">${e.stack}</pre></div>`;
-                }
+                const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
+                document.getElementById('totalTasks').textContent = requiredTotal - 1;
+                
+                checkSession();
+                showLoginRanking();
+                showPublicGuestList(); 
             });
 
         })();
     </script>
 </body>
 </html>
-
-
-
