@@ -7,10 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
-        body { 
-            font-family: 'Noto Sans TC', sans-serif; 
-            overflow-x: hidden;
-        }
+        html { transition: font-size 0.2s ease-in-out; }
+        body { font-family: 'Noto Sans TC', sans-serif; overflow-x: hidden; }
         .task-card { transition: all 0.3s ease; }
         .task-card:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
         .completed { background: linear-gradient(135deg, #10b981, #059669); }
@@ -25,6 +23,12 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen">
+    <div id="fontSizeController" class="fixed bottom-4 right-4 z-50 flex items-center space-x-2 bg-white/10 backdrop-blur-lg p-2 rounded-full border border-white/20">
+        <button id="decreaseFont" class="w-10 h-10 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors text-lg font-bold">A-</button>
+        <button id="resetFont" class="w-10 h-10 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors text-sm font-bold">A</button>
+        <button id="increaseFont" class="w-10 h-10 flex items-center justify-center bg-white/10 text-white rounded-full hover:bg-white/20 transition-colors text-xl font-bold">A+</button>
+    </div>
+
     <div id="loginScreen" class="min-h-screen px-4 py-8">
         <div class="container mx-auto max-w-6xl">
             <div class="flex justify-center mb-8">
@@ -57,7 +61,42 @@
                     </div>
                 </div>
             </div>
-            <div id="graduatedMembersSection" class="mb-8 hidden">
+
+            <div class="flex justify-center mb-8">
+                 <button type="button" id="toggleGuestSectionBtn" class="w-full max-w-md bg-teal-600/50 hover:bg-teal-500/50 text-white py-3 rounded-lg font-semibold transition-all text-lg">
+                    📝 BNI 訪客登記
+                </button>
+            </div>
+
+            <div id="guestSection" class="hidden">
+                <div class="flex justify-center mb-8">
+                    <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full border border-white/20">
+                        <h3 class="text-2xl font-semibold text-white mb-6 text-center">訪客登記表</h3>
+                        <div class="space-y-4" id="guestForm">
+                             <input type="text" id="guestName" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的姓名">
+                             <input type="text" id="guestProfession" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的專業別">
+                             <input type="text" id="guestReferrer" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="介紹人">
+                             <select id="guestInterest" class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                                 <option value="高">加入意願度：高</option>
+                                 <option value="中">加入意願度：中</option>
+                                 <option value="低">加入意願度：低</option>
+                             </select>
+                             <button type="button" id="submitGuestBtn" class="w-full bg-gradient-to-r from-teal-500 to-cyan-500 text-white py-3 rounded-lg font-semibold hover:from-teal-600 hover:to-cyan-600 transition-all">
+                                 提交登記
+                             </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                    <div class="text-center mb-6">
+                        <h2 class="text-2xl font-bold text-white mb-2">👋 最新訪客</h2>
+                    </div>
+                    <div id="publicGuestListContainer" class="space-y-3">
+                        </div>
+                </div>
+            </div>
+             <div id="graduatedMembersSection" class="mb-8 hidden">
                 <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg rounded-2xl p-6 border border-yellow-400/30">
                     <div class="text-center mb-6">
                         <h2 class="text-2xl font-bold text-yellow-300 mb-2">🏆 已出村導生表揚 🏆</h2>
@@ -178,10 +217,11 @@
                 <h1 class="text-3xl font-bold text-white mb-2">🔐 導師後台</h1>
                 <p class="text-blue-300">BNI雲貴分會新手村管理系統</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
                 <button type="button" id="showAddMemberBtn" class="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-semibold transition-all">➕ 新增導生</button>
                 <button type="button" id="showMemberListBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 導生排行榜</button>
                 <button type="button" id="showMemberMgmtBtn" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold transition-all">👥 導生管理</button>
+                <button type="button" id="showGuestListBtn" class="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-lg font-semibold transition-all">📝 來賓名單</button>
                 <button type="button" id="showPasswordSettingsBtn" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg font-semibold transition-all">🔑 密碼設定</button>
             </div>
             <div id="addMemberSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
@@ -214,6 +254,13 @@
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div id="adminManagementList"></div>
+            </div>
+            <div id="guestListAdminSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+                 <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white">來賓管理名單</h2>
+                    <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
+                </div>
+                <div id="adminGuestListContainer"></div>
             </div>
             <div id="passwordSettingsSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
@@ -404,6 +451,7 @@
                 document.getElementById('loginScreen').classList.remove('hidden');
                 
                 showLoginRanking();
+                showPublicGuestList(); 
             }
             
             async function checkSession() {
@@ -682,6 +730,7 @@
                 document.getElementById('memberRankingSection').classList.add('hidden');
                 document.getElementById('memberManagementSection').classList.add('hidden');
                 document.getElementById('passwordSettingsSection').classList.add('hidden');
+                document.getElementById('guestListAdminSection')?.classList.add('hidden');
             }
             function showAddMember() { hideAdminSections(); document.getElementById('addMemberSection').classList.remove('hidden'); }
             
@@ -941,6 +990,175 @@
                 }
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
+
+            // ★★★ 新增來賓名單功能 (JS) START ★★★
+            async function showGuestList() {
+                hideAdminSections();
+                const container = document.getElementById('adminGuestListContainer');
+                container.innerHTML = `<div class="text-white text-center p-8">正在載入來賓列表...</div>`;
+                document.getElementById('guestListAdminSection').classList.remove('hidden');
+
+                const { data: guests, error } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false });
+                if (error) {
+                    container.innerHTML = `<div class="text-red-400 text-center p-8">載入失敗: ${error.message}</div>`;
+                    return;
+                }
+                if (guests.length === 0) {
+                     container.innerHTML = '<div class="text-center text-blue-300 py-8">目前沒有任何來賓資料</div>';
+                     return;
+                }
+                container.innerHTML = guests.map(guest => `
+                    <div class="bg-white/5 rounded-lg p-4 mb-3">
+                        <div class="flex flex-col sm:flex-row items-center justify-between">
+                            <div class="flex-1 text-left mb-3 sm:mb-0">
+                                <h3 class="text-white font-semibold">${guest.name} <span class="text-sm font-normal text-gray-300">- ${guest.profession}</span></h3>
+                                <p class="text-blue-200 text-sm">介紹人：${guest.referrer}</p>
+                                <p class="text-yellow-300 text-sm">加入意願：${guest.interest_level}</p>
+                            </div>
+                            <div class="flex space-x-2">
+                                <button type="button" onclick="promoteGuestToMember(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
+                                <button type="button" onclick="deleteGuest(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            }
+            
+            async function showPublicGuestList() {
+                const container = document.getElementById('publicGuestListContainer');
+                container.innerHTML = `<div class="text-white text-center p-4">正在載入最新訪客...</div>`;
+                const { data: guests, error } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false }).limit(10);
+                
+                if (error) {
+                    container.innerHTML = `<div class="text-red-400 text-center p-4">無法載入訪客列表</div>`;
+                    return;
+                }
+                if (guests.length === 0) {
+                    container.innerHTML = `<div class="text-center text-blue-300 py-4">目前還沒有訪客登記</div>`;
+                    return;
+                }
+
+                container.innerHTML = guests.map(guest => {
+                    return `
+                    <div class="bg-white/5 rounded-lg p-3 flex items-center justify-between">
+                        <div>
+                            <p class="text-white font-semibold">${guest.name} <span class="text-sm font-normal text-gray-300">- ${guest.profession}</span></p>
+                            <p class="text-xs text-blue-200">介紹人: ${guest.referrer}</p>
+                        </div>
+                        <button onclick="deleteGuest(${guest.id}, '${guest.name}')" class="text-red-400 hover:text-red-300 text-xl font-bold">&times;</button>
+                    </div>`;
+                }).join('');
+            }
+
+            async function addGuest() {
+                const name = document.getElementById('guestName').value.trim();
+                const profession = document.getElementById('guestProfession').value.trim();
+                const referrer = document.getElementById('guestReferrer').value.trim();
+                const interest_level = document.getElementById('guestInterest').value;
+
+                if (!name || !profession || !referrer) {
+                    alert('姓名、專業別和介紹人為必填項目。');
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('guests').insert({ name, profession, referrer, interest_level });
+                
+                if (error) {
+                    alert('登記失敗：' + error.message);
+                } else {
+                    alert('感謝您的登記！');
+                    document.getElementById('guestName').value = '';
+                    document.getElementById('guestProfession').value = '';
+                    document.getElementById('guestReferrer').value = '';
+                    showPublicGuestList(); // Refresh the list
+                }
+            }
+            
+            async function deleteGuest(guestId, guestName) {
+                if (confirm(`確定要刪除來賓 ${guestName} 的資料嗎？`)) {
+                     const { error } = await supabaseClient.from('guests').delete().eq('id', guestId);
+                    if (error) {
+                        alert('刪除失敗：' + error.message);
+                    } else {
+                        alert('刪除成功！');
+                        showPublicGuestList();
+                        // If admin is logged in, also refresh their view if it's open
+                        if (!document.getElementById('adminPanelScreen').classList.contains('hidden')) {
+                            showGuestList();
+                        }
+                    }
+                }
+            }
+            window.deleteGuest = deleteGuest;
+
+            async function promoteGuestToMember(guestId, guestName) {
+                if (!confirm(`確定要將來賓 ${guestName} 轉為正式導生嗎？\n此動作會將其從來賓名單中移除。`)) return;
+
+                // 1. 取得來賓資料
+                const { data: guest, error: fetchError } = await supabaseClient.from('guests').select('*').eq('id', guestId).single();
+                if (fetchError || !guest) return alert('找不到來賓資料，無法轉換。');
+                
+                // 2. 檢查導生是否已存在
+                const { data: existingMember } = await supabaseClient.from('members').select('id').eq('name', guest.name).single();
+                if (existingMember) return alert(`轉換失敗：名為 ${guest.name} 的導生已經存在。`);
+
+                // 3. 新增至導生名單
+                const { error: insertError } = await supabaseClient.from('members').insert({
+                    name: guest.name,
+                    industry: guest.profession,
+                    tasks: getInitialTasksForDB()
+                });
+                if (insertError) return alert(`新增至導生名單時失敗：${insertError.message}`);
+
+                // 4. 從來賓名單刪除
+                const { error: deleteError } = await supabaseClient.from('guests').delete().eq('id', guestId);
+                if (deleteError) return alert(`已成功新增為導生，但從來賓名單刪除時失敗：${deleteError.message}\n請手動刪除。`);
+                
+                alert(`已成功將 ${guestName} 轉為導生！`);
+                showGuestList(); // 刷新後台來賓列表
+            }
+            window.promoteGuestToMember = promoteGuestToMember;
+            // ★★★ 新增來賓名單功能 (JS) END ★★★
+
+            function showPasswordSettings() { hideAdminSections(); document.getElementById('passwordSettingsSection').classList.remove('hidden'); }
+            function changeAdminPassword() {
+                const oldPassword = document.getElementById('oldAdminPassword').value;
+                const newPassword = document.getElementById('newAdminPassword').value;
+                if (oldPassword !== getAdminPassword()) return alert('舊密碼錯誤');
+                if (newPassword.length < 6) return alert('新密碼至少需要6個字元');
+                setAdminPassword(newPassword);
+                alert('導師密碼已更新');
+                document.getElementById('oldAdminPassword').value = '';
+                document.getElementById('newAdminPassword').value = '';
+            }
+            
+            function clearAllData() {
+                const prankMessages = [
+                    "搭咩!", "真的不行啦～", "No way!", "Stop clicking me!", "你以為這樣有用嗎？",
+                    "嗶嗶！偵測到惡意操作", "再按我要叫警察了喔", "森七七", "手指不酸嗎？", "放棄吧，人類",
+                    "第11次了...", "你是不是很閒", "好吧，我考慮一下...", "考慮結果：不行", "Just... stop.",
+                    "我數到三喔... 一...", "二...", "... 二點五 ...", "... 二點八七 ...", "算了，你繼續",
+                    "嘿，你還在啊", "聽說屏東夜市很好逛", "不要再點了，去逛夜市啦", "再點我就... 假裝當機喔", "一半了，恭喜！(並沒有)",
+                    "藍屏警告... ", "開玩笑的 :P ", "Good morning BNI!", "付出者收穫! ", "你現在正在騷擾它",
+                    "施主，回頭是岸", "你的毅力讓我感動", "但我還是不能讓你刪", "不然你請我喝杯咖啡？", "想得美",
+                    "想知道主席喜歡誰嗎? ", "提示：男的! ", "提示：也不是女的! ", "好了，不鬧了", "真的啦，不要點了",
+                    "倒數十次... ", "九... ", "八... ", "你真的很堅持欸 ", "六... ",
+                    "五... ", "四...", "準備回大廳 ", "二... ", "最後一次！"
+                ];
+
+                for (let i = 0; i < prankMessages.length; i++) {
+                    alert(prankMessages[i]);
+                }
+                alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
+            }
+
+            const updateFontSize = (change) => {
+                const rootElement = document.documentElement;
+                const currentSize = parseFloat(window.getComputedStyle(rootElement).fontSize);
+                let newSize = currentSize + change;
+                if (newSize < 12) newSize = 12;
+                if (newSize > 24) newSize = 24;
+                rootElement.style.fontSize = newSize + 'px';
+            };
             
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('loginButton')?.addEventListener('click', handleLogin);
@@ -963,16 +1181,27 @@
                 document.getElementById('closeCelebrationBtn')?.addEventListener('click', closeCelebration);
                 document.getElementById('closeMemberTaskBtn')?.addEventListener('click', closeMemberTaskModal);
                 document.querySelector('[data-category="all"]')?.addEventListener('click', () => filterTasks('all'));
-                
+                document.getElementById('increaseFont')?.addEventListener('click', () => updateFontSize(1));
+                document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
+                document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
+
+                // ★★★ 新增來賓名單功能 (事件監聽) START ★★★
+                document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
+                    document.getElementById('guestSection').classList.toggle('hidden');
+                });
+                document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
+                document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
+                // ★★★ 新增來賓名單功能 (事件監聽) END ★★★
+
                 const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
                 document.getElementById('totalTasks').textContent = requiredTotal - 1;
                 
                 checkSession();
                 showLoginRanking();
+                showPublicGuestList(); // 頁面載入時就顯示公開來賓列表
             });
 
         })();
     </script>
 </body>
 </html>
-
