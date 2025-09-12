@@ -96,7 +96,7 @@
                 <div id="publicGuestListContainer" class="space-y-3">
                 </div>
             </div>
-
+            
             <div id="graduatedMembersSection" class="mb-8 hidden">
                 <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg rounded-2xl p-6 border border-yellow-400/30">
                     <div class="text-center mb-6">
@@ -293,6 +293,61 @@
                 <button type="button" id="closeMemberTaskBtn" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
             </div>
             <div id="memberTaskModalContent"></div>
+        </div>
+    </div>
+    <div id="memberEditModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">修改導生資料</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">導生姓名</label>
+                    <input type="text" id="editMemberName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">行業別</label>
+                    <input type="text" id="editMemberIndustry" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">密碼 (留空則不修改)</label>
+                    <input type="password" id="editMemberPassword" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" id="cancelEditMemberBtn" class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold">取消</button>
+                    <button type="button" id="saveEditMemberBtn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700">儲存</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="guestEditModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 text-center">修改來賓資料</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">來賓姓名</label>
+                    <input type="text" id="editGuestName" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">來賓專業別</label>
+                    <input type="text" id="editGuestProfession" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">介紹人</label>
+                    <input type="text" id="editGuestReferrer" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-medium mb-2">加入意願度</label>
+                    <select id="editGuestInterest" class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        <option value="高">高</option>
+                        <option value="中">中</option>
+                        <option value="低">低</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-4 mt-6">
+                    <button type="button" id="cancelEditGuestBtn" class="px-6 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold">取消</button>
+                    <button type="button" id="saveEditGuestBtn" class="px-6 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-purple-700">儲存</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -751,7 +806,7 @@
                 const graduated = [];
                 members.forEach(member => {
                     const progress = calculateMemberProgress(member.tasks);
-                    const memberData = { id: member.id, name: member.name, industry: member.industry, joinDate: member.created_at, ...progress };
+                    const memberData = { name: member.name, industry: member.industry, joinDate: member.created_at, ...progress };
                     if (progress.percentage >= 100) graduated.push(memberData);
                     else ranking.push(memberData);
                 });
@@ -837,12 +892,133 @@
                                 </div>
                                 <div class="flex space-x-2">
                                     <button type="button" onclick="showMemberTasksModal(${member.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">管理任務</button>
-                                    <button type="button" onclick="resetMemberPassword(${member.id}, '${member.name}')" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-sm">重設密碼</button>
+                                    <button type="button" onclick="showMemberEditModal(${member.id})" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改名單</button>
                                     <button type="button" onclick="deleteMember(${member.id}, '${member.name}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除導生</button>
                                 </div>
                             </div>
                         </div>`;
                 }).join('');
+            }
+
+            async function deleteMember(memberId, memberName) {
+                if (confirm(`⚠️ 確定要刪除導生 ${memberName} 嗎？\n此操作將永久刪除雲端資料，無法復原！`)) {
+                    const { error } = await supabaseClient.from('members').delete().eq('id', memberId);
+                    if (error) {
+                        alert(`刪除失敗：${error.message}`);
+                    } else {
+                        alert(`導生 ${memberName} 已成功刪除。`);
+                        showMemberManagement();
+                    }
+                }
+            }
+            window.deleteMember = deleteMember;
+
+            let currentlyEditingMember = null;
+            function showMemberEditModal(memberId) {
+                const modal = document.getElementById('memberEditModal');
+                const nameInput = document.getElementById('editMemberName');
+                const industryInput = document.getElementById('editMemberIndustry');
+                
+                supabaseClient.from('members').select('*').eq('id', memberId).single().then(({data, error}) => {
+                    if (error || !data) return alert('找不到導生資料。');
+                    currentlyEditingMember = data;
+                    nameInput.value = data.name;
+                    industryInput.value = data.industry;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
+            }
+            window.showMemberEditModal = showMemberEditModal;
+
+            async function saveMemberEdit() {
+                if (!currentlyEditingMember) return;
+                const nameInput = document.getElementById('editMemberName');
+                const industryInput = document.getElementById('editMemberIndustry');
+                const passwordInput = document.getElementById('editMemberPassword');
+                
+                const updatedData = {
+                    name: nameInput.value.trim(),
+                    industry: industryInput.value.trim(),
+                };
+
+                if (passwordInput.value) {
+                    updatedData.password = passwordInput.value;
+                }
+
+                const { error } = await supabaseClient.from('members').update(updatedData).eq('id', currentlyEditingMember.id);
+                if (error) {
+                    alert('修改失敗：' + error.message);
+                } else {
+                    alert('導生資料已成功更新！');
+                    closeMemberEditModal();
+                    showMemberManagement();
+                }
+            }
+
+            function closeMemberEditModal() {
+                document.getElementById('memberEditModal').classList.add('hidden');
+                document.getElementById('memberEditModal').classList.remove('flex');
+                currentlyEditingMember = null;
+                document.getElementById('editMemberPassword').value = '';
+            }
+
+            let currentlyEditingGuest = null;
+            function showGuestEditModal(guestId, source) {
+                const modal = document.getElementById('guestEditModal');
+                const nameInput = document.getElementById('editGuestName');
+                const professionInput = document.getElementById('editGuestProfession');
+                const referrerInput = document.getElementById('editGuestReferrer');
+                const interestSelect = document.getElementById('editGuestInterest');
+                
+                supabaseClient.from('guests').select('*').eq('id', guestId).single().then(({data, error}) => {
+                    if (error || !data) return alert('找不到來賓資料。');
+                    currentlyEditingGuest = data;
+                    nameInput.value = data.name;
+                    professionInput.value = data.profession;
+                    referrerInput.value = data.referrer;
+                    interestSelect.value = data.interest_level;
+                    
+                    document.getElementById('saveEditGuestBtn').dataset.source = source;
+                    modal.classList.remove('hidden');
+                    modal.classList.add('flex');
+                });
+            }
+            window.showGuestEditModal = showGuestEditModal;
+
+            async function saveGuestEdit() {
+                if (!currentlyEditingGuest) return;
+
+                const nameInput = document.getElementById('editGuestName');
+                const professionInput = document.getElementById('editGuestProfession');
+                const referrerInput = document.getElementById('editGuestReferrer');
+                const interestSelect = document.getElementById('editGuestInterest');
+                
+                const updatedData = {
+                    name: nameInput.value.trim(),
+                    profession: professionInput.value.trim(),
+                    referrer: referrerInput.value.trim(),
+                    interest_level: interestSelect.value,
+                };
+                
+                const { error } = await supabaseClient.from('guests').update(updatedData).eq('id', currentlyEditingGuest.id);
+                
+                if (error) {
+                    alert('更新失敗: ' + error.message);
+                } else {
+                    alert('來賓資料已成功更新！');
+                    closeGuestEditModal();
+                    if (document.getElementById('saveEditGuestBtn').dataset.source === 'admin') {
+                        showGuestList();
+                    } else {
+                        showPublicGuestList();
+                    }
+                }
+            }
+
+            function closeGuestEditModal() {
+                document.getElementById('guestEditModal').classList.add('hidden');
+                document.getElementById('guestEditModal').classList.remove('flex');
+                currentlyEditingGuest = null;
             }
 
             async function deleteMember(memberId, memberName) {
@@ -1018,6 +1194,7 @@
                             </div>
                             <div class="flex space-x-2">
                                 <button type="button" onclick="promoteGuestToMember(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">轉為導生</button>
+                                <button type="button" onclick="showGuestEditModal(${guest.id}, 'admin')" class="px-3 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-sm">修改名單</button>
                                 <button type="button" onclick="deleteGuest(${guest.id}, '${guest.name}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
                             </div>
                         </div>
@@ -1040,10 +1217,14 @@
 
                 container.innerHTML = guests.map(guest => {
                     return `
-                    <div class="bg-white/5 rounded-lg p-3 flex items-center justify-between">
-                        <div>
+                    <div class="bg-white/5 rounded-lg p-3 flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="mb-2 sm:mb-0">
                             <p class="text-white font-semibold">${guest.name} <span class="text-sm font-normal text-gray-300">- ${guest.profession}</span></p>
-                            <p class="text-xs text-blue-200">介紹人: ${guest.referrer}</p>
+                            <p class="text-xs text-blue-200">介紹人: ${guest.referrer} | 意願: ${guest.interest_level}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <button type="button" onclick="showGuestEditModal(${guest.id}, 'public')" class="px-2 py-1 bg-purple-600 hover:bg-purple-700 text-white rounded text-xs">修改</button>
+                            <button type="button" onclick="deleteGuest(${guest.id}, '${guest.name}')" class="px-2 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-xs">刪除</button>
                         </div>
                     </div>`;
                 }).join('');
@@ -1185,20 +1366,23 @@
                 document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
                 document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
 
-                // ★★★ 新增來賓名單功能 (事件監聽) START ★★★
                 document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
                     document.getElementById('guestFormSection').classList.toggle('hidden');
                 });
                 document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
                 document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
-                // ★★★ 新增來賓名單功能 (事件監聽) END ★★★
+                
+                document.getElementById('saveEditMemberBtn')?.addEventListener('click', saveMemberEdit);
+                document.getElementById('cancelEditMemberBtn')?.addEventListener('click', closeMemberEditModal);
+                document.getElementById('saveEditGuestBtn')?.addEventListener('click', saveGuestEdit);
+                document.getElementById('cancelEditGuestBtn')?.addEventListener('click', closeGuestEditModal);
 
                 const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
                 document.getElementById('totalTasks').textContent = requiredTotal - 1;
                 
                 checkSession();
                 showLoginRanking();
-                showPublicGuestList(); // 頁面載入時就顯示公開來賓列表
+                showPublicGuestList(); 
             });
 
         })();
