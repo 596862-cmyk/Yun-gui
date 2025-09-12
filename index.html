@@ -64,14 +64,14 @@
 
             <div class="flex justify-center mb-8">
                  <button type="button" id="toggleGuestSectionBtn" class="w-full max-w-md bg-teal-600/50 hover:bg-teal-500/50 text-white py-3 rounded-lg font-semibold transition-all text-lg">
-                    📝 BNI 訪客登記
+                    📝 BNI 來賓登記
                 </button>
             </div>
 
             <div id="guestSection" class="hidden">
                 <div class="flex justify-center mb-8">
                     <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-8 max-w-md w-full border border-white/20">
-                        <h3 class="text-2xl font-semibold text-white mb-6 text-center">訪客登記表</h3>
+                        <h3 class="text-2xl font-semibold text-white mb-6 text-center">來賓登記表</h3>
                         <div class="space-y-4" id="guestForm">
                              <input type="text" id="guestName" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的姓名">
                              <input type="text" id="guestProfession" required class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400" placeholder="您的專業別">
@@ -90,7 +90,7 @@
 
                 <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                     <div class="text-center mb-6">
-                        <h2 class="text-2xl font-bold text-white mb-2">👋 最新訪客</h2>
+                        <h2 class="text-2xl font-bold text-white mb-2">👋 最新來賓</h2>
                     </div>
                     <div id="publicGuestListContainer" class="space-y-3">
                         </div>
@@ -1025,15 +1025,15 @@
             
             async function showPublicGuestList() {
                 const container = document.getElementById('publicGuestListContainer');
-                container.innerHTML = `<div class="text-white text-center p-4">正在載入最新訪客...</div>`;
+                container.innerHTML = `<div class="text-white text-center p-4">正在載入最新來賓...</div>`;
                 const { data: guests, error } = await supabaseClient.from('guests').select('*').order('created_at', { ascending: false }).limit(10);
                 
                 if (error) {
-                    container.innerHTML = `<div class="text-red-400 text-center p-4">無法載入訪客列表</div>`;
+                    container.innerHTML = `<div class="text-red-400 text-center p-4">無法載入來賓列表</div>`;
                     return;
                 }
                 if (guests.length === 0) {
-                    container.innerHTML = `<div class="text-center text-blue-300 py-4">目前還沒有訪客登記</div>`;
+                    container.innerHTML = `<div class="text-center text-blue-300 py-4">目前還沒有來賓登記</div>`;
                     return;
                 }
 
@@ -1205,3 +1205,4 @@
     </script>
 </body>
 </html>
+
