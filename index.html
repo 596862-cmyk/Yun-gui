@@ -88,6 +88,14 @@
                     </div>
                 </div>
             </div>
+            
+            <div id="calendarSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20 mb-8">
+                <div class="text-center mb-6">
+                    <h2 class="text-2xl font-bold text-white mb-2">📅 分會行事曆</h2>
+                </div>
+                <div id="publicCalendarList" class="space-y-3">
+                </div>
+            </div>
 
             <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                 <div class="text-center mb-6">
@@ -218,11 +226,12 @@
                 <h1 class="text-3xl font-bold text-white mb-2">🔐 導師後台</h1>
                 <p class="text-blue-300">BNI雲貴分會新手村管理系統</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                 <button type="button" id="showAddMemberBtn" class="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-semibold transition-all">➕ 新增導生</button>
-                <button type="button" id="showMemberListBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 導生排行榜</button>
+                <button type="button" id="showMemberListBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 排行榜</button>
                 <button type="button" id="showMemberMgmtBtn" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold transition-all">👥 導生管理</button>
                 <button type="button" id="showGuestListBtn" class="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-lg font-semibold transition-all">📝 來賓名單</button>
+                <button type="button" id="showCalendarMgmtBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-lg font-semibold transition-all">📅 行事曆</button>
                 <button type="button" id="showPasswordSettingsBtn" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg font-semibold transition-all">🔑 密碼設定</button>
             </div>
             <div id="addMemberSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
@@ -263,6 +272,25 @@
                 </div>
                 <div id="adminGuestListContainer"></div>
             </div>
+            <div id="calendarManagementSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+                <div class="flex justify-between items-center mb-4">
+                   <h2 class="text-xl font-semibold text-white">行事曆管理</h2>
+                   <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
+               </div>
+               <div class="bg-white/5 rounded-lg p-4 mb-6">
+                   <h3 class="text-white font-semibold mb-3">新增活動</h3>
+                   <div class="space-y-3">
+                       <input type="date" id="eventDate" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                       <input type="text" id="eventTitle" placeholder="活動標題" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                       <textarea id="eventDescription" placeholder="活動說明 (選填)" rows="2" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                       <button type="button" id="addEventBtn" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded-lg font-semibold transition-all">新增活動</button>
+                   </div>
+               </div>
+               <div>
+                   <h3 class="text-white font-semibold mb-3">活動列表</h3>
+                   <div id="adminCalendarList" class="space-y-3"></div>
+               </div>
+           </div>
             <div id="passwordSettingsSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">密碼設定</h2>
@@ -453,6 +481,7 @@
                 
                 showLoginRanking();
                 showPublicGuestList(); 
+                showPublicCalendar();
             }
             
             async function checkSession() {
@@ -732,6 +761,7 @@
                 document.getElementById('memberManagementSection').classList.add('hidden');
                 document.getElementById('passwordSettingsSection').classList.add('hidden');
                 document.getElementById('guestListAdminSection')?.classList.add('hidden');
+                document.getElementById('calendarManagementSection')?.classList.add('hidden');
             }
             function showAddMember() { hideAdminSections(); document.getElementById('addMemberSection').classList.remove('hidden'); }
             
@@ -1003,7 +1033,7 @@
             
             function escapeHTML(str) {
                 if (typeof str !== 'string') return str;
-                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
 
             // ★★★ 來賓名單功能 (JS) START ★★★
@@ -1171,6 +1201,123 @@
             window.promoteGuestToMember = promoteGuestToMember;
             // ★★★ 來賓名單功能 (JS) END ★★★
 
+            // ★★★ 行事曆功能 (JS) START ★★★
+            async function showPublicCalendar() {
+                const container = document.getElementById('publicCalendarList');
+                container.innerHTML = `<div class="text-white text-center p-4">正在載入活動...</div>`;
+                const { data: events, error } = await supabaseClient.from('calendar_events').select('*').order('event_date', { ascending: true });
+                
+                if (error) {
+                    container.innerHTML = `<div class="text-red-400 text-center p-4">無法載入活動</div>`;
+                    return;
+                }
+                if (events.length === 0) {
+                    container.innerHTML = `<div class="text-center text-blue-300 py-4">目前沒有任何活動</div>`;
+                    return;
+                }
+
+                container.innerHTML = events.map(event => `
+                    <div class="bg-white/5 rounded-lg p-3">
+                        <p class="text-yellow-300 font-semibold">${event.event_date}</p>
+                        <p class="text-white font-semibold mt-1">${event.title}</p>
+                        ${event.description ? `<p class="text-xs text-blue-200 mt-1">${event.description}</p>`: ''}
+                    </div>`).join('');
+            }
+            
+            async function showCalendarManagement() {
+                hideAdminSections();
+                const container = document.getElementById('adminCalendarList');
+                container.innerHTML = `<div class="text-white text-center p-8">正在載入活動列表...</div>`;
+                document.getElementById('calendarManagementSection').classList.remove('hidden');
+
+                const { data: events, error } = await supabaseClient.from('calendar_events').select('*').order('event_date', { ascending: false });
+                if (error) {
+                    container.innerHTML = `<div class="text-red-400 text-center p-8">載入失敗: ${error.message}</div>`;
+                    return;
+                }
+                if (events.length === 0) {
+                     container.innerHTML = '<div class="text-center text-blue-300 py-8">目前沒有任何活動</div>';
+                     return;
+                }
+                container.innerHTML = events.map(event => `
+                    <div class="bg-white/5 rounded-lg p-4 mb-3">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                            <div class="flex-1 text-left mb-3 sm:mb-0">
+                                <h3 class="text-white font-semibold">${event.event_date} - ${event.title}</h3>
+                                <p class="text-blue-200 text-sm">${event.description || '無說明'}</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
+                                <button type="button" onclick="editCalendarEvent(${event.id}, '${escapeHTML(event.title)}', '${event.event_date}', '${escapeHTML(event.description)}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
+                                <button type="button" onclick="deleteCalendarEvent(${event.id}, '${escapeHTML(event.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            }
+
+            async function addCalendarEvent() {
+                const event_date = document.getElementById('eventDate').value;
+                const title = document.getElementById('eventTitle').value.trim();
+                const description = document.getElementById('eventDescription').value.trim();
+
+                if (!event_date || !title) {
+                    alert('日期和標題為必填項目。');
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('calendar_events').insert({ event_date, title, description });
+                
+                if (error) {
+                    alert('新增失敗：' + error.message);
+                } else {
+                    alert('活動已成功新增！');
+                    document.getElementById('eventDate').value = '';
+                    document.getElementById('eventTitle').value = '';
+                    document.getElementById('eventDescription').value = '';
+                    showCalendarManagement();
+                    showPublicCalendar();
+                }
+            }
+            
+            async function editCalendarEvent(eventId, currentTitle, currentDate, currentDescription) {
+                const newDate = prompt("請輸入新的活動日期：", currentDate);
+                if (newDate === null || newDate.trim() === '') return;
+
+                const newTitle = prompt("請輸入新的活動標題：", currentTitle);
+                if (newTitle === null || newTitle.trim() === '') return;
+                
+                const newDescription = prompt("請輸入新的活動說明：", currentDescription);
+                if (newDescription === null) return;
+
+                const { error } = await supabaseClient
+                    .from('calendar_events')
+                    .update({ event_date: newDate, title: newTitle.trim(), description: newDescription.trim() })
+                    .eq('id', eventId);
+
+                if (error) {
+                    alert('更新活動失敗：' + error.message);
+                } else {
+                    alert('活動資料已成功更新！');
+                    showCalendarManagement();
+                    showPublicCalendar();
+                }
+            }
+            window.editCalendarEvent = editCalendarEvent;
+
+            async function deleteCalendarEvent(eventId, eventTitle) {
+                if (confirm(`確定要刪除活動 "${eventTitle}" 嗎？`)) {
+                     const { error } = await supabaseClient.from('calendar_events').delete().eq('id', eventId);
+                    if (error) {
+                        alert('刪除失敗：' + error.message);
+                    } else {
+                        alert('刪除成功！');
+                        showCalendarManagement();
+                        showPublicCalendar();
+                    }
+                }
+            }
+            window.deleteCalendarEvent = deleteCalendarEvent;
+            // ★★★ 行事曆功能 (JS) END ★★★
+
             const updateFontSize = (change) => {
                 const rootElement = document.documentElement;
                 const currentSize = parseFloat(window.getComputedStyle(rootElement).fontSize);
@@ -1210,6 +1357,11 @@
                 });
                 document.getElementById('submitGuestBtn')?.addEventListener('click', addGuest);
                 document.getElementById('showGuestListBtn')?.addEventListener('click', showGuestList);
+                
+                // Calendar events
+                document.getElementById('showCalendarMgmtBtn')?.addEventListener('click', showCalendarManagement);
+                document.getElementById('addEventBtn')?.addEventListener('click', addCalendarEvent);
+
 
                 const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
                 document.getElementById('totalTasks').textContent = requiredTotal - 1;
@@ -1217,11 +1369,11 @@
                 checkSession();
                 showLoginRanking();
                 showPublicGuestList(); 
+                showPublicCalendar();
             });
 
         })();
     </script>
 </body>
 </html>
-by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V160來賓進階版
-
+by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161行事曆版
