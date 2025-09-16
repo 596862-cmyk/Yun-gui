@@ -105,7 +105,7 @@
                 </div>
             </div>
 
-            <div id="graduatedMembersSection" class="my-8 hidden">
+            <div id="graduatedMembersSection" class="mb-8 hidden">
                 <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg rounded-2xl p-6 border border-yellow-400/30">
                     <div class="text-center mb-6">
                         <h2 class="text-2xl font-bold text-yellow-300 mb-2">🏆 已出村導生表揚 🏆</h2>
@@ -114,7 +114,7 @@
                     <div id="graduatedMembersList" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
                 </div>
             </div>
-            <div id="loginRankingSection" class="mt-8 hidden">
+            <div id="loginRankingSection" class="hidden">
                 <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
                     <div class="text-center mb-6">
                         <h2 class="text-2xl font-bold text-white mb-2">📊 導生排行榜</h2>
@@ -175,11 +175,11 @@
                     <div class="text-yellow-200 text-base">進行中</div>
                 </div>
                 <div class="bg-blue-500/20 rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-blue-300" id="notStartedTasks">0</div>
+                    <div class="text-2xl font-bold text-blue-300" id="notStartedTasks">31</div>
                     <div class="text-blue-200 text-base">未開始</div>
                 </div>
                 <div class="bg-purple-500/20 rounded-lg p-3 text-center">
-                    <div class="text-2xl font-bold text-purple-300" id="totalTasks">0</div>
+                    <div class="text-2xl font-bold text-purple-300" id="totalTasks">26</div>
                     <div class="text-purple-200 text-base">必修關卡</div>
                 </div>
             </div>
@@ -187,7 +187,7 @@
         <div class="mb-8">
             <h3 class="text-xl font-semibold text-white mb-4">任務分類</h3>
             <div class="flex flex-wrap gap-2" id="categoryFilters">
-                <button type="button" class="category-filter active bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20" data-category="all">全部</button>
+                <button type="button" class="category-filter active bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20" data-category="all">全部 (26必修+5選修)</button>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="taskContainer"></div>
@@ -226,17 +226,15 @@
                 <h1 class="text-3xl font-bold text-white mb-2">🔐 導師後台</h1>
                 <p class="text-blue-300">BNI雲貴分會新手村管理系統</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-7 gap-4 mb-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
                 <button type="button" id="showAddMemberBtn" class="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-semibold transition-all">➕ 新增導生</button>
                 <button type="button" id="showMemberListBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 排行榜</button>
                 <button type="button" id="showMemberMgmtBtn" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold transition-all">👥 導生管理</button>
                 <button type="button" id="showGuestListBtn" class="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-lg font-semibold transition-all">📝 來賓名單</button>
                 <button type="button" id="showCalendarMgmtBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-lg font-semibold transition-all">📅 行事曆</button>
-                <button type="button" id="showTaskMgmtBtn" class="bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg font-semibold transition-all">🔧 任務管理</button>
                 <button type="button" id="showPasswordSettingsBtn" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg font-semibold transition-all">🔑 密碼設定</button>
             </div>
-
-            <div id="addMemberSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="addMemberSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">新增導生</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -253,32 +251,28 @@
                     </div>
                 </div>
             </div>
-
-            <div id="memberRankingSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="memberRankingSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">導生排行榜</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div class="space-y-3" id="adminRankingList"></div>
             </div>
-
-            <div id="memberManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="memberManagementSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">導生管理</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div id="adminManagementList"></div>
             </div>
-
-            <div id="guestListAdminSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="guestListAdminSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                  <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">來賓管理名單</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div id="adminGuestListContainer"></div>
             </div>
-
-            <div id="calendarManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="calendarManagementSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                    <h2 class="text-xl font-semibold text-white">行事曆管理</h2>
                    <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -297,83 +291,7 @@
                    <div id="adminCalendarList" class="space-y-3"></div>
                </div>
            </div>
-
-            <div id="taskManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
-                <div class="flex justify-between items-center mb-4">
-                   <h2 class="text-xl font-semibold text-white">任務管理</h2>
-                   <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
-                </div>
-                <div class="bg-white/5 rounded-lg p-4 mb-6">
-                    <h3 class="text-white font-semibold mb-3" id="taskFormTitle">新增任務</h3>
-                    <form id="taskForm" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <input type="hidden" id="taskId">
-                        <div>
-                            <label class="block text-white text-sm mb-1">標題</label>
-                            <input type="text" id="taskTitle" required class="w-full input-style" placeholder="任務標題">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">分類</label>
-                            <input type="text" id="taskCategory" required class="w-full input-style" placeholder="例如：入門準備">
-                        </div>
-                        <div class="md:col-span-2">
-                            <label class="block text-white text-sm mb-1">描述</label>
-                            <textarea id="taskDescription" rows="2" class="w-full input-style" placeholder="任務的簡單描述"></textarea>
-                        </div>
-                         <div>
-                            <label class="block text-white text-sm mb-1">圖示 (Icon)</label>
-                            <input type="text" id="taskIcon" class="w-full input-style" placeholder="例如：📦">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">難度</label>
-                            <input type="text" id="taskDifficulty" class="w-full input-style" placeholder="例如：基礎、進階、考核">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">獎勵</label>
-                            <input type="text" id="taskReward" class="w-full input-style" placeholder="例如：新手資料包">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">完成條件</label>
-                            <input type="text" id="taskCompletionCondition" class="w-full input-style" placeholder="完成任務的條件">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">影片網址</label>
-                            <input type="url" id="taskVideoUrl" class="w-full input-style" placeholder="https://...">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">FB 網址</label>
-                            <input type="url" id="taskFbUrl" class="w-full input-style" placeholder="https://...">
-                        </div>
-                        <div>
-                            <label class="block text-white text-sm mb-1">課程網址</label>
-                            <input type="url" id="taskCourseUrl" class="w-full input-style" placeholder="https://...">
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center">
-                                <input type="checkbox" id="taskIsRequired" class="h-4 w-4 rounded">
-                                <label for="taskIsRequired" class="ml-2 text-white text-sm">是否為必修</label>
-                            </div>
-                            <div class="flex items-center">
-                                <input type="checkbox" id="taskIsCountable" class="h-4 w-4 rounded">
-                                <label for="taskIsCountable" class="ml-2 text-white text-sm">是否為計次任務</label>
-                            </div>
-                        </div>
-                         <div>
-                            <label class="block text-white text-sm mb-1">目標次數</label>
-                            <input type="number" id="taskTargetCount" min="1" class="w-full input-style" placeholder="計次任務的目標次數">
-                        </div>
-                        <div class="md:col-span-2 flex justify-end space-x-2">
-                            <button type="button" id="cancelEditTaskBtn" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold hidden">取消編輯</button>
-                            <button type="submit" id="saveTaskBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold">儲存任務</button>
-                        </div>
-                    </form>
-                </div>
-               <div>
-                   <h3 class="text-white font-semibold mb-3">現有任務列表</h3>
-                   <div id="adminTaskList" class="space-y-3"></div>
-               </div>
-           </div>
-
-            <div id="passwordSettingsSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="passwordSettingsSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">密碼設定</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -382,22 +300,20 @@
                     <div class="bg-white/5 rounded-lg p-4">
                         <h3 class="text-white font-semibold mb-3">更改導師密碼</h3>
                         <div class="space-y-3">
-                            <input type="password" id="oldAdminPassword" placeholder="輸入舊密碼" required class="w-full input-style">
-                            <input type="password" id="newAdminPassword" placeholder="輸入新密碼" required class="w-full input-style">
+                            <input type="password" id="oldAdminPassword" placeholder="輸入舊密碼" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <input type="password" id="newAdminPassword" placeholder="輸入新密碼" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
                             <button type="button" id="changePasswordBtn" class="w-full bg-purple-600 hover:bg-purple-700 text-white py-2 rounded-lg font-semibold transition-all">更改密碼</button>
                         </div>
                     </div>
                 </div>
             </div>
-
-            <div class="text-center space-y-4 mt-8">
+            <div class="text-center space-y-4">
                 <button type="button" id="clearAllDataBtn" class="px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg font-semibold transition-all">⚠️ 清除所有資料</button>
                 <p class="text-red-300 text-sm">注意：此操作將會讓你知道主席喜歡誰(歡迎點擊)！</p>
                 <button type="button" id="hideAdminPanelBtn" class="px-6 py-3 bg-gray-600 hover:bg-gray-700 text-white rounded-lg font-semibold transition-all">返回登入頁面</button>
             </div>
         </div>
     </div>
-
     <div id="memberTaskModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto mx-4 w-full" id="memberTaskModalContentWrapper">
             <div class="flex justify-between items-center mb-4">
@@ -414,29 +330,48 @@
             'use strict';
             
             const SUPABASE_URL = 'https://hdssnsnkagfjfbuvgfkn.supabase.co'; 
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhkc3Nuc25rYWdmamZidXZnZmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MjAyMDksImV4cCI6MjA3MzE5NjIwOX0.UoSKuEbguyE-I2j8gRO_mclOffwkV6WFLwayjrkFsuY';
+            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhkc3Nuc25rYWdmamZidXZnZmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MjAyMDksImV4cCI6MjA3MzE5NjIwOX0.UoSKuEbguyE-I2j8gRO_mclOffwkV6WFLwayjrkFsuY'; 
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             
             let currentMember = null;
             let tasks = []; 
-            let tasksMasterList = [];
-
-            async function fetchTasksMaster() {
-                const { data, error } = await supabaseClient
-                    .from('tasks_master')
-                    .select('*')
-                    .order('id', { ascending: true });
-                
-                if (error) {
-                    console.error('Error fetching tasks master list:', error);
-                    alert('無法從資料庫載入任務列表，請檢查網路連線或聯繫管理員。');
-                    return [];
-                }
-                return data;
-            }
+            
+            const tasksTemplate = [
+                { id: 1, title: "新手包", description: "收到區域寄送的導生新手包", icon: "📦", difficulty: "基礎", reward: "新手資料包", category: "入門準備", completionCondition: "收到區域寄送的導生新手包", isRequired: true },
+                { id: 2, title: "名牌", description: "製作個人專屬的BNI名牌", icon: "🏷️", difficulty: "基礎", reward: "個人名牌", category: "入門準備", completionCondition: "製作名牌", isRequired: true },
+                { id: 3, title: "參加25s專業簡報培訓", description: "觀看25秒專業簡報教學影片", icon: "🎤", difficulty: "基礎", reward: "簡報技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 4, title: "【導師考核】每周25s專業簡報", description: "通過導師考核，展示25秒專業簡報能力", icon: "✅", difficulty: "考核", reward: "簡報認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 5, title: "【導師考核】25秒自我介紹及Slogan", description: "完成25秒自我介紹和個人Slogan展示", icon: "🗣️", difficulty: "考核", reward: "自我介紹認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 6, title: "參加Connect系統開通&操作培訓", description: "觀看Connect系統教學影片(共2部)", icon: "💻", difficulty: "基礎", reward: "系統操作技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 7, title: "【導師考核】Connect系統開通&操作", description: "通過Connect系統開通&操作考核", icon: "🔗", difficulty: "考核", reward: "系統操作認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 8, title: "參加目標設定培訓", description: "觀看目標設定教學影片", icon: "🎯", difficulty: "基礎", reward: "目標規劃技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 9, title: "【導師考核】目標設定", description: "完成個人目標設定並通過導師考核", icon: "📊", difficulty: "考核", reward: "目標設定認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 10, title: "參加人脈合作變現表培訓", description: "觀看人脈合作變現表教學影片", icon: "💰", difficulty: "進階", reward: "變現技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 11, title: "【導師考核】人脈合作變現表", description: "完成人脈合作變現表並通過考核", icon: "💎", difficulty: "考核", reward: "變現表認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 12, title: "新會員見面會", description: "參與每月一次由區域排定時間的新人見面會", icon: "🤝", difficulty: "基礎", reward: "人脈建立", category: "實體活動", completionCondition: "參與每月一次由區域排定時間的新人見面會(一個月只有一次很重要)", isRequired: true },
+                { id: 13, title: "FB區域粉專按讚", description: "雲貴分會FB點讚", icon: "👍", difficulty: "基礎", reward: "社群連結", category: "社交活動", completionCondition: "雲貴分會FB點讚", fbUrl: "https://www.facebook.com/bni.yungui", isRequired: true },
+                { id: 14, title: "初階MSP", description: "報名區域培訓課程(與進階MSP擇一即可)", icon: "📈", difficulty: "進階", reward: "初階MSP證書", category: "線上課程", completionCondition: "報名區域培訓課程(與15項擇一即可)", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: true },
+                { id: 15, title: "進階MSP", description: "報名區域培訓課程(與初階MSP擇一即可)", icon: "🚀", difficulty: "進階", reward: "進階MSP證書", category: "線上課程", completionCondition: "報名區域培訓課程(與14項擇一即可)", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: true },
+                { id: 16, title: "會員成功藍圖", description: "參與導師八周特定主題", icon: "🗺️", difficulty: "進階", reward: "成功藍圖", category: "導師八周", completionCondition: "參與導師八周特定主題", isRequired: true },
+                { id: 17, title: "新會員護照", description: "參與導師八周特定主題", icon: "📘", difficulty: "進階", reward: "導生護照", category: "導師八周", completionCondition: "參與導師八周特定主題", isRequired: true },
+                { id: 18, title: "導師八周", description: "參與4次每周四導師八周", icon: "🧙‍♂️", difficulty: "進階", reward: "導師指導完成證書", category: "導師八周", completionCondition: "參與4次每周四導師八周", weeklyTopics: "W1:導生成功藍圖/出席的重要性 W2:行政小組運作/明確目標 W3:新導生護照/告訴我們怎麼說 W4:邀約來賓心法與技巧/帶來小道具 W5:導生成功藍圖/非同凡響的見證 W6:行政小組運作/一對一會面 W7:新導生護照/為什麼要帶來賓 W8:邀約來賓心法與技巧/我們應該怎麼做", isRequired: true, isCountable: true, targetCount: 4 },
+                { id: 19, title: "全國分享會", description: "參與每周一全國分享會1次", icon: "🌟", difficulty: "進階", reward: "全國視野", category: "大型活動", completionCondition: "參與每周一全國分享會1次", isRequired: true },
+                { id: 20, title: "參加紅綠燈計算培訓", description: "觀看紅綠燈計算教學影片", icon: "🚦", difficulty: "進階", reward: "分析技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 21, title: "【導師考核】紅綠燈計算", description: "通過紅綠燈計算方法考核", icon: "📊", difficulty: "考核", reward: "分析認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 22, title: "導師示範一對一", description: "邀約導師由導師示範一對一", icon: "👁️", difficulty: "進階", reward: "實戰經驗", category: "實戰學習", completionCondition: "邀約導師由導師示範一對一", isRequired: true },
+                { id: 23, title: "參加1-1表格 1、2表培訓", description: "觀看1-1表格教學影片", icon: "📋", difficulty: "進階", reward: "表格技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 24, title: "【導師考核】完成1-1表格 1、2表", description: "完成1-1表格1、2表並通過考核", icon: "✍️", difficulty: "考核", reward: "表格認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 25, title: "參加1-1表格 3、4表培訓", description: "觀看1-1表格教學影片", icon: "📄", difficulty: "進階", reward: "進階表格技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
+                { id: 26, title: "【導師考核】完成1-1表格 3、4表", description: "完成1-1表格3、4表並通過考核", icon: "📝", difficulty: "考核", reward: "進階表格認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
+                { id: 27, title: "簡報工作坊(選修)", description: "報名區域培訓課程", icon: "🎪", difficulty: "選修", reward: "簡報專精技能", category: "選修課程", completionCondition: "報名區域培訓課程", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: false },
+                { id: 28, title: "一對一工作坊(選修)", description: "報名區域培訓課程", icon: "👥", difficulty: "選修", reward: "面談技能", category: "選修課程", completionCondition: "報名區域培訓課程", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: false },
+                { id: 29, title: "與導師一對一(選修)", description: "邀約導師進行一對一面談", icon: "🎯", difficulty: "選修", reward: "導師指導", category: "選修課程", completionCondition: "邀約導師一對一", isRequired: false },
+                { id: 30, title: "與董顧大使一對一(選修)", description: "邀約董事顧問大使進行一對一面談", icon: "👔", difficulty: "選修", reward: "高階指導", category: "選修課程", completionCondition: "邀約董顧大使一對一", isRequired: false },
+                { id: 31, title: "與九長一對一(選修)", description: "邀約九長進行一對一面談交流", icon: "🏆", difficulty: "選修", reward: "領導指導", category: "選修課程", completionCondition: "邀約九長一對一", isRequired: false }
+            ];
 
             function getInitialTasksForDB() {
-                return tasksMasterList.map(task => ({
+                return tasksTemplate.map(task => ({
                     id: task.id,
                     status: 'not-started',
                     currentCount: task.isCountable ? 0 : undefined
@@ -445,8 +380,7 @@
             
             function loadTasksFromMemberData(memberTasksProgress) {
                 if (!memberTasksProgress) memberTasksProgress = [];
-                
-                tasks = tasksMasterList.map(templateTask => {
+                tasks = tasksTemplate.map(templateTask => {
                     const progress = memberTasksProgress.find(p => p.id === templateTask.id);
                     return {
                         ...templateTask,
@@ -667,66 +601,41 @@
             }
             
             function calculateMemberProgress(memberTasks) {
-                if (!Array.isArray(memberTasks)) return { completedCount: 0, totalCount: 0, percentage: 0, completed: 0, inProgress: 0 };
-                
-                let requiredCompletedCount = 0;
-                const requiredTasks = tasksMasterList.filter(t => t.isRequired);
-                let requiredTotalCount = requiredTasks.length;
-                
-                // This logic is complex and might need adjustment based on specific MSP rules
-                const mspTaskIds = tasksMasterList.filter(t => t.title.includes("MSP")).map(t => t.id);
-                if (mspTaskIds.length > 1 && requiredTasks.some(t => mspTaskIds.includes(t.id))) {
-                    requiredTotalCount -= (mspTaskIds.length - 1);
-                }
-
-                const hasCompletedMSP = mspTaskIds.length > 0 && requiredTasks.some(task => 
-                    mspTaskIds.includes(task.id) && memberTasks.some(mt => mt.id === task.id && mt.status === 'completed')
-                );
-
-                requiredTasks.forEach(task => {
+                if (!memberTasks) return { completedCount: 0, totalCount: 0, percentage: 0, completed: 0, inProgress: 0 };
+                let requiredCompletedCount = 0, requiredTotalCount = 0, mspProcessed = false;
+                const completed = memberTasks.filter(t => t.status === 'completed').length;
+                const inProgress = memberTasks.filter(t => t.status === 'in-progress').length;
+                tasksTemplate.filter(t => t.isRequired).forEach(task => {
                     const memberTask = memberTasks.find(mt => mt.id === task.id);
-                    if (mspTaskIds.includes(task.id)) {
-                        if (hasCompletedMSP) {
-                           requiredCompletedCount += 1;
-                           // This ensures we only count the MSP group once
-                           mspTaskIds.forEach(id => {
-                               const idx = requiredTasks.findIndex(t => t.id === id);
-                               if(idx > -1) requiredTasks.splice(idx, 1);
-                           });
+                    if (task.id === 14 || task.id === 15) {
+                        if (!mspProcessed) {
+                            requiredTotalCount++;
+                            if (memberTasks.some(mt => (mt.id === 14 || mt.id === 15) && mt.status === 'completed')) requiredCompletedCount++;
+                            mspProcessed = true;
                         }
                     } else if (task.isCountable) {
-                         requiredCompletedCount += (memberTask?.currentCount || 0) / (task.targetCount || 1);
+                        requiredTotalCount++;
+                        requiredCompletedCount += (memberTask?.currentCount || 0) / task.targetCount;
                     } else {
+                        requiredTotalCount++;
                         if (memberTask?.status === 'completed') requiredCompletedCount++;
                     }
                 });
-
-                const allMemberTasks = tasksMasterList.map(templateTask => {
-                    const progress = memberTasks.find(p => p.id === templateTask.id);
-                    return { ...templateTask, status: progress ? progress.status : 'not-started' };
-                });
-
-                const completed = allMemberTasks.filter(t => t.status === 'completed').length;
-                const inProgress = allMemberTasks.filter(t => t.status === 'in-progress').length;
                 const percentage = requiredTotalCount > 0 ? Math.round((requiredCompletedCount / requiredTotalCount) * 100) : 0;
-
-                return { completedCount: Math.floor(requiredCompletedCount), totalCount: requiredTotalCount, percentage: Math.min(100, percentage), completed, inProgress };
+                return { completedCount: Math.floor(requiredCompletedCount), totalCount: requiredTotalCount, percentage, completed, inProgress };
             }
 
             function generateCategoryFilters() {
-                const categories = [...new Set(tasksMasterList.map(task => task.category))];
+                const categories = [...new Set(tasksTemplate.map(task => task.category))];
                 const container = document.getElementById('categoryFilters');
-                container.innerHTML = '<button type="button" class="category-filter active bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20" data-category="all">全部</button>';
-                
                 const allButton = container.querySelector('[data-category="all"]');
-                const requiredCount = tasksMasterList.filter(t => t.isRequired).length;
-                const optionalCount = tasksMasterList.filter(t => !t.isRequired).length;
-                allButton.textContent = `全部 (${requiredCount}必修+${optionalCount}選修)`;
-                allButton.addEventListener('click', () => filterTasks('all'));
-
+                container.innerHTML = '';
+                container.appendChild(allButton);
+                const requiredCount = tasksTemplate.filter(t => t.isRequired).length;
+                const optionalCount = tasksTemplate.filter(t => !t.isRequired).length;
+                allButton.textContent = `全部 (${requiredCount - 1}必修+${optionalCount}選修)`;
                 categories.forEach(category => {
-                    if(!category) return;
-                    const count = tasksMasterList.filter(task => task.category === category).length;
+                    const count = tasksTemplate.filter(task => task.category === category).length;
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'category-filter bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20';
@@ -736,24 +645,16 @@
                     container.appendChild(button);
                 });
             }
-
             function filterTasks(category) {
                 currentFilter = category;
                 document.querySelectorAll('.category-filter').forEach(btn => btn.classList.remove('active'));
                 document.querySelector(`[data-category="${category}"]`).classList.add('active');
                 renderTasks();
             }
-
             function renderTasks() {
                 const container = document.getElementById('taskContainer');
-                if (!container) return;
                 container.innerHTML = '';
-                if (tasks.length === 0) {
-                    container.innerHTML = '<p class="text-white text-center md:col-span-2 lg:col-span-3">目前沒有任何任務，請導師至後台新增。</p>';
-                    return;
-                }
                 const filteredTasks = currentFilter === 'all' ? tasks : tasks.filter(task => task.category === currentFilter);
-                
                 filteredTasks.forEach(task => {
                     const statusClass = task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'not-started';
                     const statusText = task.status === 'completed' ? '已完成' : task.status === 'in-progress' ? '進行中' : '未開始';
@@ -763,7 +664,7 @@
                     const card = document.createElement('div');
                     card.className = `task-card bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/20 ${statusClass}`;
                     card.innerHTML = `
-                        <div class="flex items-start justify-between mb-3"><div class="text-3xl">${task.icon || '📝'}</div><div class="flex items-center space-x-2"><span class="text-sm ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusIcon}</span><span class="text-xs ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusText}</span></div></div>
+                        <div class="flex items-start justify-between mb-3"><div class="text-3xl">${task.icon}</div><div class="flex items-center space-x-2"><span class="text-sm ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusIcon}</span><span class="text-xs ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusText}</span></div></div>
                         <h3 class="text-xl font-semibold text-white mb-2 leading-tight">${task.title}</h3> <p class="text-blue-200 mb-3 text-base leading-relaxed">${task.description}</p> ${countDisplay}
                         <div class="flex items-center justify-between mb-3"><span class="text-sm ${difficultyColor} font-medium px-2 py-1 bg-white/10 rounded">${task.difficulty}</span><span class="text-sm text-purple-300">🎁 ${task.reward}</span></div>
                         <div class="text-sm text-blue-300 mb-3">${task.category}</div>
@@ -780,7 +681,6 @@
                 });
                 bindTaskEvents();
             }
-
             function bindTaskEvents() {
                 document.querySelectorAll('.external-link-btn').forEach(btn => btn.addEventListener('click', function(e) { e.stopPropagation(); openExternalLink(this.dataset.url); }));
                 document.querySelectorAll('.increment-btn').forEach(btn => btn.addEventListener('click', function(e) { e.stopPropagation(); incrementCount(parseInt(this.dataset.taskId)); }));
@@ -788,7 +688,6 @@
                 document.querySelectorAll('.update-status-btn').forEach(btn => btn.addEventListener('click', function(e) { e.stopPropagation(); updateTaskStatus(parseInt(this.dataset.taskId), this.dataset.newStatus); }));
                 document.querySelectorAll('.reset-status-btn').forEach(btn => btn.addEventListener('click', function(e) { e.stopPropagation(); updateTaskStatus(parseInt(this.dataset.taskId), 'not-started'); }));
             }
-            
             function showCelebration(taskTitle) {
                 const modal = document.getElementById('celebrationModal');
                 modal.querySelector('h3').textContent = '恭喜完成任務！';
@@ -799,14 +698,12 @@
                 modal.classList.remove('hidden');
                 setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
             }
-            
             function closeCelebration() {
                 const modal = document.getElementById('celebrationModal');
                 modal.querySelector('div').classList.remove('scale-100');
                 modal.querySelector('div').classList.add('scale-95');
                 setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 200);
             }
-
             function showGraduationCelebration() {
                 const modal = document.getElementById('celebrationModal');
                 modal.querySelector('h3').textContent = '🎊 恭喜出村！🎊';
@@ -817,19 +714,15 @@
                 modal.classList.remove('hidden');
                 setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
             }
-            
             function updateProgress() {
                 const completed = tasks.filter(t => t.status === 'completed').length;
                 const inProgress = tasks.filter(t => t.status === 'in-progress').length;
                 const notStarted = tasks.filter(t => t.status === 'not-started').length;
-                const progress = calculateMemberProgress(currentMember?.tasks || []);
-                
+                const progress = calculateMemberProgress(tasks);
                 document.getElementById('completedCount').textContent = `${progress.completedCount}/${progress.totalCount}`;
                 document.getElementById('completedTasks').textContent = completed;
                 document.getElementById('inProgressTasks').textContent = inProgress;
                 document.getElementById('notStartedTasks').textContent = notStarted;
-                document.getElementById('totalTasks').textContent = progress.totalCount;
-
                 document.getElementById('progressPercent').textContent = progress.percentage + '%';
                 const circle = document.getElementById('progressCircle');
                 const circumference = 2 * Math.PI * 52;
@@ -848,7 +741,6 @@
             function setAdminPassword(newPassword) { localStorage.setItem('adminPassword', newPassword); }
             function showAdminLogin() { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('adminLoginScreen').classList.add('flex'); document.getElementById('adminLoginScreen').classList.remove('hidden');}
             function hideAdminLogin() { document.getElementById('adminLoginScreen').classList.add('hidden'); document.getElementById('adminLoginScreen').classList.remove('flex'); document.getElementById('loginScreen').classList.remove('hidden'); document.getElementById('adminPassword').value = ''; }
-            
             function handleAdminLogin() {
                 const password = document.getElementById('adminPassword').value;
                 if (password === getAdminPassword()) {
@@ -861,22 +753,16 @@
                     document.getElementById('adminPassword').value = '';
                 }
             }
-            
-            function showAdminPanel() { 
-                document.getElementById('adminPanelScreen').classList.remove('hidden'); 
-                hideAdminSections(); 
-            }
-            
-            function hideAdminPanel() { 
-                document.getElementById('adminPanelScreen').classList.add('hidden'); 
-                document.getElementById('loginScreen').classList.remove('hidden'); 
-                showLoginRanking(); 
-            }
-            
+            function showAdminPanel() { document.getElementById('adminPanelScreen').classList.remove('hidden'); hideAdminSections(); }
+            function hideAdminPanel() { document.getElementById('adminPanelScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); showLoginRanking(); }
             function hideAdminSections() {
-                document.querySelectorAll('.admin-section').forEach(section => section.classList.add('hidden'));
+                document.getElementById('addMemberSection').classList.add('hidden');
+                document.getElementById('memberRankingSection').classList.add('hidden');
+                document.getElementById('memberManagementSection').classList.add('hidden');
+                document.getElementById('passwordSettingsSection').classList.add('hidden');
+                document.getElementById('guestListAdminSection')?.classList.add('hidden');
+                document.getElementById('calendarManagementSection')?.classList.add('hidden');
             }
-            
             function showAddMember() { hideAdminSections(); document.getElementById('addMemberSection').classList.remove('hidden'); }
             
             async function showMemberList() {
@@ -1043,7 +929,7 @@
             
             function _renderAdminTasks(member, container) {
                 let memberTasksProgress = member.tasks || [];
-                container.innerHTML = tasksMasterList.map(taskTpl => {
+                container.innerHTML = tasksTemplate.map(taskTpl => {
                     const taskProgress = memberTasksProgress.find(p => p.id === taskTpl.id) || { id: taskTpl.id, status: 'not-started', currentCount: 0 };
                     const statusOptions = ['not-started', 'in-progress', 'completed']
                         .map(s => `<option value="${s}" ${taskProgress.status === s ? 'selected' : ''}>${s === 'not-started' ? '未開始' : s === 'in-progress' ? '進行中' : '已完成'}</option>`)
@@ -1089,23 +975,21 @@
                 const contentWrapper = document.getElementById('memberTaskModalContentWrapper');
                 const scrollPosition = contentWrapper.scrollTop;
                 
-                let memberTasks = currentlyEditingMember.tasks || [];
-                const taskIndex = memberTasks.findIndex(t => t.id === taskId);
+                const taskIndex = currentlyEditingMember.tasks.findIndex(t => t.id === taskId);
                 
                 if (taskIndex !== -1) {
-                    const task = memberTasks[taskIndex];
+                    const task = currentlyEditingMember.tasks[taskIndex];
                     if (newStatus !== null) task.status = newStatus;
                     if (newCount !== null) task.currentCount = newCount;
-                    const taskTpl = tasksMasterList.find(t => t.id === taskId);
+                    const taskTpl = tasksTemplate.find(t => t.id === taskId);
                     if (taskTpl.isCountable) {
                         if (task.currentCount > 0 && task.currentCount < taskTpl.targetCount) task.status = 'in-progress';
                         else if (task.currentCount >= taskTpl.targetCount) task.status = 'completed';
                         else task.status = 'not-started';
                     }
                 } else {
-                     memberTasks.push({ id: taskId, status: newStatus || 'not-started', currentCount: newCount });
+                     currentlyEditingMember.tasks.push({ id: taskId, status: newStatus || 'not-started', currentCount: newCount });
                 }
-                currentlyEditingMember.tasks = memberTasks;
 
                 const { error } = await supabaseClient
                     .from('members')
@@ -1143,18 +1027,13 @@
             
             function clearAllData() {
                 const prankMessages = [ "搭咩!", "真的不行啦～", "No way!", "Stop clicking me!", "你以為這樣有用嗎？", "嗶嗶！偵測到惡意操作", "再按我要叫警察了喔", "森七七", "手指不酸嗎？", "放棄吧，人類", "第11次了...", "你是不是很閒", "好吧，我考慮一下...", "考慮結果：不行", "Just... stop.", "我數到三喔... 一...", "二...", "... 二點五 ...", "... 二點八七 ...", "算了，你繼續", "嘿，你還在啊", "聽說屏東夜市很好逛", "不要再點了，去逛夜市啦", "再點我就... 假裝當機喔", "一半了，恭喜！(並沒有)", "藍屏警告... ", "開玩笑的 :P ", "Good morning BNI!", "付出者收穫! ", "你現在正在騷擾它", "施主，回頭是岸", "你的毅力讓我感動", "但我還是不能讓你刪", "不然你請我喝杯咖啡？", "想得美", "想知道主席喜歡誰嗎? ", "提示：男的! ", "提示：也不是女的! ", "好了，不鬧了", "真的啦，不要點了", "倒數十次... ", "九... ", "八... ", "你真的很堅持欸 ", "六... ", "五... ", "四...", "準備回大廳 ", "二... ", "最後一次！" ];
-                for (let i = 0; i < prankMessages.length; i++) { alert(pranks[i]); }
+                for (let i = 0; i < prankMessages.length; i++) { alert(prankMessages[i]); }
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
             
             function escapeHTML(str) {
-                if (str === null || typeof str === 'undefined') return '';
-                if (typeof str !== 'string') str = String(str);
-                return str.replace(/\\/g, '\\\\')
-                          .replace(/'/g, "\\'")
-                          .replace(/"/g, '&quot;')
-                          .replace(/\n/g, '\\n')
-                          .replace(/\r/g, '\\r');
+                if (typeof str !== 'string') return str;
+                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
             }
 
             // ★★★ 來賓名單功能 (JS) START ★★★
