@@ -141,7 +141,7 @@
                     </svg>
                 </div>
                 <div id="publicGuestListContainer" class="space-y-3 transition-all duration-300">
-                </div>
+                    </div>
             </div>
 
             <div id="graduatedMembersSection" class="my-8 hidden">
@@ -175,8 +175,8 @@
         (function() {
             'use strict';
             
-            const SUPABASE_URL = 'https://hdssnsnkagfjfbuvgfkn.supabase.co'; 
-            const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhkc3Nuc25rYWdmamZidXZnZmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MjAyMDksImV4cCI6MjA3MzE5NjIwOX0.UoSKuEbguyE-I2j8gRO_mclOffwkV6WFLwayjrkFsuY';
+            const SUPABASE_URL = 'YOUR_SUPABASE_URL'; 
+            const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             
             let currentMember = null;
@@ -575,6 +575,82 @@
             function showAddMember() { hideAdminSections(); document.getElementById('addMemberSection').classList.remove('hidden'); }
             
             // ... (All other admin panel show functions like showMemberList, showMemberManagement, etc.)
+            
+            // --- FIX START: 以下是為您補上的「來賓登記」與「顯示來賓列表」的程式碼 ---
+
+            async function handleGuestSubmit() {
+                const guestName = document.getElementById('guestName').value.trim();
+                const guestProfession = document.getElementById('guestProfession').value.trim();
+                const guestReferrer = document.getElementById('guestReferrer').value.trim();
+                const guestInterest = document.getElementById('guestInterest').value;
+
+                if (!guestName || !guestProfession || !guestReferrer) {
+                    alert('請填寫所有必填欄位（姓名、專業別、介紹人）。');
+                    return;
+                }
+
+                const { error } = await supabaseClient.from('guests').insert({
+                    guest_name: guestName,
+                    guest_profession: guestProfession,
+                    guest_referrer: guestReferrer,
+                    guest_interest: guestInterest
+                });
+
+                if (error) {
+                    alert('提交失敗，請稍後再試。錯誤訊息：' + error.message);
+                } else {
+                    alert('✅ 來賓登記成功！');
+                    document.getElementById('guestName').value = '';
+                    document.getElementById('guestProfession').value = '';
+                    document.getElementById('guestReferrer').value = '';
+                    document.getElementById('guestInterest').value = '高';
+                    document.getElementById('guestFormSection').classList.add('hidden');
+                    await showPublicGuestList(); // 刷新列表
+                }
+            }
+            
+            async function showPublicGuestList() {
+                const container = document.getElementById('publicGuestListContainer');
+                if (!container) return;
+
+                container.innerHTML = '<p class="text-center text-blue-300">正在載入最新來賓名單...</p>';
+
+                // 假設您的來賓資料表叫做 'guests'
+                const { data, error } = await supabaseClient
+                    .from('guests')
+                    .select('guest_name, guest_profession, guest_referrer, created_at')
+                    .order('created_at', { ascending: false })
+                    .limit(5); // 只顯示最新的5筆
+
+                if (error) {
+                    container.innerHTML = '<p class="text-center text-red-400">無法載入來賓名單。</p>';
+                    console.error('Error fetching guests:', error);
+                    return;
+                }
+
+                if (!data || data.length === 0) {
+                    container.innerHTML = '<p class="text-center text-blue-300">目前還沒有來賓登記資料。</p>';
+                    return;
+                }
+                
+                container.innerHTML = data.map(guest => `
+                    <div class="bg-white/5 rounded-lg p-3 flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            ${guest.guest_name.charAt(0)}
+                        </div>
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-white">${guest.guest_name}</h4>
+                            <p class="text-sm text-cyan-200">${guest.guest_profession}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-blue-300">介紹人</p>
+                            <p class="text-sm text-white">${guest.guest_referrer}</p>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            // --- FIX END ---
+
 
             // ★★★ Calendar Functions (NEW MONTHLY VIEW) ★★★
             function getMonthName(monthIndex) {
@@ -658,6 +734,14 @@
                 document.getElementById('loginButton')?.addEventListener('click', handleLogin);
                 document.getElementById('showAdminBtn')?.addEventListener('click', showAdminLogin);
                 document.getElementById('logoutBtn')?.addEventListener('click', logout);
+                
+                // --- FIX START: 為「提交登記」按鈕綁定事件 ---
+                document.getElementById('submitGuestBtn')?.addEventListener('click', handleGuestSubmit);
+                document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
+                    document.getElementById('guestFormSection').classList.toggle('hidden');
+                });
+                // --- FIX END ---
+                
                 document.getElementById('prevMonthBtn')?.addEventListener('click', () => {
                     calendarNavDate.setMonth(calendarNavDate.getMonth() - 1);
                     renderCalendar();
@@ -687,4 +771,3 @@
 </html>
 
 by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161.2行事曆版本
-
