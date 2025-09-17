@@ -1031,17 +1031,18 @@
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
             
+            // =====[ START: MODIFIED CODE ]=====
             function escapeHTML(str) {
-    if (typeof str !== 'string') return str;
-    return str.replace(/\\/g, '\\\\')   // 1. 先處理反斜線
-              .replace(/'/g, "\\'")     // 2. 將單引號轉義為 \'
-              .replace(/"/g, "&quot;")  // 3. 處理雙引號（用於HTML屬性）
-              .replace(/\n/g, '\\n')    // 4. 將換行符轉義為 \n
-              .replace(/\r/g, '')      // 5. 移除回車符
-              .replace(/</g, "&lt;")
-              .replace(/>/g, "&gt;");
-}
+                if (typeof str !== 'string') return str;
+                return str.replace(/\\/g, '\\\\')   // 1. 先處理反斜線
+                          .replace(/'/g, "\\'")     // 2. 將單引號轉義為 \'
+                          .replace(/"/g, "&quot;")  // 3. 處理雙引號（用於HTML屬性）
+                          .replace(/\n/g, '\\n')    // 4. 將換行符轉義為 \n
+                          .replace(/\r/g, '')      // 5. 移除回車符
+                          .replace(/</g, "&lt;")
+                          .replace(/>/g, "&gt;");
             }
+            // =====[ END: MODIFIED CODE ]=====
 
             // ★★★ 來賓名單功能 (JS) START ★★★
             async function showGuestList() {
@@ -1254,7 +1255,7 @@
                                 <p class="text-blue-200 text-sm">${event.description || '無說明'}</p>
                             </div>
                             <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
-                                <button type="button" onclick="editCalendarEvent(${event.id}, '${escapeHTML(event.title)}', '${event.event_date}', '${escapeHTML(event.description)}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
+                                <button type="button" onclick="editCalendarEvent(${event.id}, '${escapeHTML(event.title)}', '${event.event_date}', '${escapeHTML(event.description || '')}')" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">修改</button>
                                 <button type="button" onclick="deleteCalendarEvent(${event.id}, '${escapeHTML(event.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
                             </div>
                         </div>
@@ -1384,4 +1385,3 @@
 </body>
 </html>
 by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161行事曆版本
-
