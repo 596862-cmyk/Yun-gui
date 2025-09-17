@@ -1032,8 +1032,15 @@
             }
             
             function escapeHTML(str) {
-                if (typeof str !== 'string') return str;
-                return str.replace(/'/g, "&apos;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    if (typeof str !== 'string') return str;
+    return str.replace(/\\/g, '\\\\')   // 1. 先處理反斜線
+              .replace(/'/g, "\\'")     // 2. 將單引號轉義為 \'
+              .replace(/"/g, "&quot;")  // 3. 處理雙引號（用於HTML屬性）
+              .replace(/\n/g, '\\n')    // 4. 將換行符轉義為 \n
+              .replace(/\r/g, '')      // 5. 移除回車符
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;");
+}
             }
 
             // ★★★ 來賓名單功能 (JS) START ★★★
@@ -1377,3 +1384,4 @@
 </body>
 </html>
 by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161行事曆版本
+
