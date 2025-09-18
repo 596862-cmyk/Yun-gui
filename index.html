@@ -551,7 +551,6 @@
             }
 
             async function showLoginRanking() {
-                // MODIFIED: Fetch 'graduated_at'
                 const { data: members, error } = await supabaseClient.from('members').select('name, industry, created_at, tasks, graduated_at');
                 if (error) {
                     console.error("Error fetching members for ranking:", error);
@@ -563,7 +562,6 @@
 
                 members.forEach(member => {
                     const progress = calculateMemberProgress(member.tasks);
-                    // MODIFIED: Add graduationDate to the object
                     const memberData = { name: member.name, industry: member.industry, joinDate: member.created_at, graduationDate: member.graduated_at, ...progress };
                     if (progress.percentage >= 100) graduated.push(memberData);
                     else ranking.push(memberData);
@@ -576,7 +574,6 @@
                 const graduatedList = document.getElementById('graduatedMembersList');
                 if (graduated.length > 0) {
                     graduatedList.innerHTML = graduated.map(member => {
-                        // MODIFIED: Use graduationDate if available, otherwise fall back to joinDate
                         const displayDate = member.graduationDate ? new Date(member.graduationDate) : new Date(member.joinDate);
                         const graduationDateString = displayDate.toLocaleDateString('zh-TW');
                         return `<div class="bg-gradient-to-r from-yellow-500/30 to-orange-500/30 rounded-lg p-4 border border-yellow-400/50"><div class="flex items-center space-x-3"><div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">${member.name.charAt(0).toUpperCase()}</div><div class="flex-1"><h3 class="text-yellow-100 font-semibold text-lg">${member.name}</h3><p class="text-yellow-200 text-sm">${member.industry}</p><p class="text-yellow-300 text-xs">出村日期：${graduationDateString}</p></div><div class="text-3xl">🎓</div></div></div>`;
@@ -719,22 +716,28 @@
                 setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
             }
 
-            // NEW FUNCTION: To set graduation date in Supabase
-            async function setGraduationDateIfNeeded() {
-                if (!currentMember || currentMember.graduated_at) {
-                    return; // Exit if no member is logged in or if the date is already set
-                }
-                
-                const { error } = await supabaseClient
-                    .from('members')
-                    .update({ graduated_at: new Date().toISOString() })
-                    .eq('id', currentMember.id);
+            // =====[ START: NEW/MODIFIED CODE BLOCK ]=====
 
-                if (error) {
-                    console.error('Failed to set graduation date:', error);
-                } else {
-                    // Update local member object to prevent re-triggering
-                    currentMember.graduated_at = new Date().toISOString();
+            // NEW SHARED FUNCTION: Checks progress and sets graduation date if needed.
+            async function checkAndSetGraduation(member) {
+                if (!member || member.graduated_at) {
+                    return; // Exit if no member data or already graduated
+                }
+
+                const progress = calculateMemberProgress(member.tasks);
+                if (progress.percentage >= 100) {
+                    const { error } = await supabaseClient
+                        .from('members')
+                        .update({ graduated_at: new Date().toISOString() })
+                        .eq('id', member.id);
+
+                    if (error) {
+                        console.error(`Failed to set graduation date for member ${member.id}:`, error);
+                    } else {
+                        console.log(`Graduation date set for member ${member.id}`);
+                        // Update the local object to prevent re-triggering
+                        member.graduated_at = new Date().toISOString();
+                    }
                 }
             }
 
@@ -752,14 +755,17 @@
                 const circumference = 2 * Math.PI * 52;
                 const offset = circumference - (progress.percentage / 100) * circumference;
                 circle.style.strokeDashoffset = offset;
-                if (progress.percentage === 100) {
-                    // MODIFIED: Call the new function to set the date
-                    setGraduationDateIfNeeded();
+                
+                if (progress.percentage >= 100) {
+                    // MODIFIED: Call the shared function
+                    checkAndSetGraduation(currentMember); 
                     if (!localStorage.getItem('graduationCelebrated')) {
                         setTimeout(() => { showGraduationCelebration(); localStorage.setItem('graduationCelebrated', 'true'); }, 1000);
                     }
                 }
             }
+            
+            // =====[ END: NEW/MODIFIED CODE BLOCK ]=====
             
             function openExternalLink(url) {
                 window.open(url, '_blank', 'noopener,noreferrer');
@@ -988,7 +994,7 @@
                 modal.classList.remove('hidden');
                 modal.classList.add('flex');
 
-                const { data: member, error } = await supabaseClient.from('members').select('id, name, tasks').eq('id', memberId).single();
+                const { data: member, error } = await supabaseClient.from('members').select('*').eq('id', memberId).single();
                 if (error || !member) {
                     content.innerHTML = `<div class="text-red-500 text-center p-8">載入失敗: ${error.message}</div>`;
                     return;
@@ -1000,6 +1006,7 @@
             }
             window.showMemberTasksModal = showMemberTasksModal;
 
+            // =====[ START: MODIFIED CODE BLOCK ]=====
             async function adminUpdateTask(memberId, taskId, newStatus, newCount) {
                 if (!currentlyEditingMember || currentlyEditingMember.id !== memberId) return;
 
@@ -1030,10 +1037,13 @@
                 if (error) {
                     alert('更新失敗: ' + error.message);
                 } else {
+                    // MODIFIED: Call the shared graduation check function after a successful update
+                    await checkAndSetGraduation(currentlyEditingMember);
                     _renderAdminTasks(currentlyEditingMember, document.getElementById('memberTaskModalContent'));
                     contentWrapper.scrollTop = scrollPosition;
                 }
             }
+            // =====[ END: MODIFIED CODE BLOCK ]=====
             window.adminUpdateTask = adminUpdateTask;
 
             function closeMemberTaskModal() {
