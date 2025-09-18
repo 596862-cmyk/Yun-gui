@@ -551,7 +551,8 @@
             }
 
             async function showLoginRanking() {
-                const { data: members, error } = await supabaseClient.from('members').select('name, industry, created_at, tasks');
+                // MODIFIED: Fetch 'graduated_at'
+                const { data: members, error } = await supabaseClient.from('members').select('name, industry, created_at, tasks, graduated_at');
                 if (error) {
                     console.error("Error fetching members for ranking:", error);
                     return;
@@ -562,7 +563,8 @@
 
                 members.forEach(member => {
                     const progress = calculateMemberProgress(member.tasks);
-                    const memberData = { name: member.name, industry: member.industry, joinDate: member.created_at, ...progress };
+                    // MODIFIED: Add graduationDate to the object
+                    const memberData = { name: member.name, industry: member.industry, joinDate: member.created_at, graduationDate: member.graduated_at, ...progress };
                     if (progress.percentage >= 100) graduated.push(memberData);
                     else ranking.push(memberData);
                 });
@@ -574,8 +576,10 @@
                 const graduatedList = document.getElementById('graduatedMembersList');
                 if (graduated.length > 0) {
                     graduatedList.innerHTML = graduated.map(member => {
-                        const joinDate = new Date(member.joinDate).toLocaleDateString('zh-TW');
-                        return `<div class="bg-gradient-to-r from-yellow-500/30 to-orange-500/30 rounded-lg p-4 border border-yellow-400/50"><div class="flex items-center space-x-3"><div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">${member.name.charAt(0).toUpperCase()}</div><div class="flex-1"><h3 class="text-yellow-100 font-semibold text-lg">${member.name}</h3><p class="text-yellow-200 text-sm">${member.industry}</p><p class="text-yellow-300 text-xs">出村日期：${joinDate}</p></div><div class="text-3xl">🎓</div></div></div>`;
+                        // MODIFIED: Use graduationDate if available, otherwise fall back to joinDate
+                        const displayDate = member.graduationDate ? new Date(member.graduationDate) : new Date(member.joinDate);
+                        const graduationDateString = displayDate.toLocaleDateString('zh-TW');
+                        return `<div class="bg-gradient-to-r from-yellow-500/30 to-orange-500/30 rounded-lg p-4 border border-yellow-400/50"><div class="flex items-center space-x-3"><div class="w-12 h-12 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold">${member.name.charAt(0).toUpperCase()}</div><div class="flex-1"><h3 class="text-yellow-100 font-semibold text-lg">${member.name}</h3><p class="text-yellow-200 text-sm">${member.industry}</p><p class="text-yellow-300 text-xs">出村日期：${graduationDateString}</p></div><div class="text-3xl">🎓</div></div></div>`;
                     }).join('');
                     graduatedSection.classList.remove('hidden');
                 } else {
@@ -714,6 +718,26 @@
                 modal.classList.remove('hidden');
                 setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
             }
+
+            // NEW FUNCTION: To set graduation date in Supabase
+            async function setGraduationDateIfNeeded() {
+                if (!currentMember || currentMember.graduated_at) {
+                    return; // Exit if no member is logged in or if the date is already set
+                }
+                
+                const { error } = await supabaseClient
+                    .from('members')
+                    .update({ graduated_at: new Date().toISOString() })
+                    .eq('id', currentMember.id);
+
+                if (error) {
+                    console.error('Failed to set graduation date:', error);
+                } else {
+                    // Update local member object to prevent re-triggering
+                    currentMember.graduated_at = new Date().toISOString();
+                }
+            }
+
             function updateProgress() {
                 const completed = tasks.filter(t => t.status === 'completed').length;
                 const inProgress = tasks.filter(t => t.status === 'in-progress').length;
@@ -728,8 +752,12 @@
                 const circumference = 2 * Math.PI * 52;
                 const offset = circumference - (progress.percentage / 100) * circumference;
                 circle.style.strokeDashoffset = offset;
-                if (progress.percentage === 100 && !localStorage.getItem('graduationCelebrated')) {
-                    setTimeout(() => { showGraduationCelebration(); localStorage.setItem('graduationCelebrated', 'true'); }, 1000);
+                if (progress.percentage === 100) {
+                    // MODIFIED: Call the new function to set the date
+                    setGraduationDateIfNeeded();
+                    if (!localStorage.getItem('graduationCelebrated')) {
+                        setTimeout(() => { showGraduationCelebration(); localStorage.setItem('graduationCelebrated', 'true'); }, 1000);
+                    }
                 }
             }
             
@@ -771,7 +799,7 @@
                 container.innerHTML = `<div class="text-white text-center p-8">正在從雲端載入排行榜...</div>`;
                 document.getElementById('memberRankingSection').classList.remove('hidden');
 
-                const { data: members, error } = await supabaseClient.from('members').select('id, name, industry, created_at, tasks');
+                const { data: members, error } = await supabaseClient.from('members').select('id, name, industry, created_at, tasks, graduated_at');
                 if (error) {
                     container.innerHTML = `<div class="text-red-400 text-center p-8">載入失敗: ${error.message}</div>`;
                     return;
@@ -781,7 +809,7 @@
                 const graduated = [];
                 members.forEach(member => {
                     const progress = calculateMemberProgress(member.tasks);
-                    const memberData = { id: member.id, name: member.name, industry: member.industry, joinDate: member.created_at, ...progress };
+                    const memberData = { id: member.id, name: member.name, industry: member.industry, joinDate: member.created_at, graduationDate: member.graduated_at, ...progress };
                     if (progress.percentage >= 100) graduated.push(memberData);
                     else ranking.push(memberData);
                 });
@@ -792,14 +820,17 @@
                 if (graduated.length > 0) {
                      html += `<h3 class="text-lg font-semibold text-yellow-300 mb-3">🏆 已出村導生 (${graduated.length}位)</h3>
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-                        ${graduated.map(member => `
+                        ${graduated.map(member => {
+                            const displayDate = member.graduationDate ? new Date(member.graduationDate) : new Date(member.joinDate);
+                            const graduationDateString = displayDate.toLocaleDateString('zh-TW');
+                            return `
                             <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 border border-yellow-400/30">
                                 <div class="flex items-center space-x-3">
                                     <div class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">${member.name.charAt(0).toUpperCase()}</div>
-                                    <div><h4 class="text-yellow-200 font-semibold text-sm">${member.name}</h4><p class="text-yellow-300 text-xs">加入：${new Date(member.joinDate).toLocaleDateString('zh-TW')}</p></div>
+                                    <div><h4 class="text-yellow-200 font-semibold text-sm">${member.name}</h4><p class="text-yellow-300 text-xs">出村：${graduationDateString}</p></div>
                                     <div class="ml-auto text-yellow-300 text-lg">🎓</div>
                                 </div>
-                            </div>`).join('')}
+                            </div>`}).join('')}
                         </div>`;
                 }
                 if (ranking.length === 0 && graduated.length === 0) {
@@ -1031,18 +1062,16 @@
                 alert("好啦，放過你～ 資料沒有被刪除喔！ 😉");
             }
             
-            // =====[ START: MODIFIED CODE ]=====
             function escapeHTML(str) {
                 if (typeof str !== 'string') return str;
-                return str.replace(/\\/g, '\\\\')   // 1. 先處理反斜線
-                          .replace(/'/g, "\\'")     // 2. 將單引號轉義為 \'
-                          .replace(/"/g, "&quot;")  // 3. 處理雙引號（用於HTML屬性）
-                          .replace(/\n/g, '\\n')    // 4. 將換行符轉義為 \n
-                          .replace(/\r/g, '')      // 5. 移除回車符
+                return str.replace(/\\/g, '\\\\')
+                          .replace(/'/g, "\\'")
+                          .replace(/"/g, "&quot;")
+                          .replace(/\n/g, '\\n')
+                          .replace(/\r/g, '')
                           .replace(/</g, "&lt;")
                           .replace(/>/g, "&gt;");
             }
-            // =====[ END: MODIFIED CODE ]=====
 
             // ★★★ 來賓名單功能 (JS) START ★★★
             async function showGuestList() {
@@ -1384,4 +1413,4 @@
     </script>
 </body>
 </html>
-by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161行事曆版本
+by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161.2行事曆版本
