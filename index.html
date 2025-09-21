@@ -20,6 +20,7 @@
         .category-filter.active { background: linear-gradient(135deg, #8b5cf6, #7c3aed); transform: scale(1.05); }
         * { box-sizing: border-box; }
         .modal-overlay { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+        .admin-nav-btn.active { background-color: #4f46e5; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen">
@@ -187,7 +188,7 @@
         <div class="mb-8">
             <h3 class="text-xl font-semibold text-white mb-4">任務分類</h3>
             <div class="flex flex-wrap gap-2" id="categoryFilters">
-                <button type="button" class="category-filter active bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20" data-category="all">全部 (26必修+5選修)</button>
+                <button type="button" class="category-filter active bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20" data-category="all">全部</button>
             </div>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="taskContainer"></div>
@@ -226,15 +227,16 @@
                 <h1 class="text-3xl font-bold text-white mb-2">🔐 導師後台</h1>
                 <p class="text-blue-300">BNI雲貴分會新手村管理系統</p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
-                <button type="button" id="showAddMemberBtn" class="bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-semibold transition-all">➕ 新增導生</button>
-                <button type="button" id="showMemberListBtn" class="bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 排行榜</button>
-                <button type="button" id="showMemberMgmtBtn" class="bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold transition-all">👥 導生管理</button>
-                <button type="button" id="showGuestListBtn" class="bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-lg font-semibold transition-all">📝 來賓名單</button>
-                <button type="button" id="showCalendarMgmtBtn" class="bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-lg font-semibold transition-all">📅 行事曆</button>
-                <button type="button" id="showPasswordSettingsBtn" class="bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg font-semibold transition-all">🔑 密碼設定</button>
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-4 mb-8">
+                <button type="button" id="showAddMemberBtn" class="admin-nav-btn bg-orange-600 hover:bg-orange-700 text-white p-4 rounded-lg font-semibold transition-all">➕ 新增導生</button>
+                <button type="button" id="showMemberListBtn" class="admin-nav-btn bg-blue-600 hover:bg-blue-700 text-white p-4 rounded-lg font-semibold transition-all">📊 排行榜</button>
+                <button type="button" id="showMemberMgmtBtn" class="admin-nav-btn bg-green-600 hover:bg-green-700 text-white p-4 rounded-lg font-semibold transition-all">👥 導生管理</button>
+                <button type="button" id="showTaskMgmtBtn" class="admin-nav-btn bg-indigo-600 hover:bg-indigo-700 text-white p-4 rounded-lg font-semibold transition-all">⚙️ 任務管理</button>
+                <button type="button" id="showGuestListBtn" class="admin-nav-btn bg-teal-600 hover:bg-teal-700 text-white p-4 rounded-lg font-semibold transition-all">📝 來賓名單</button>
+                <button type="button" id="showCalendarMgmtBtn" class="admin-nav-btn bg-yellow-600 hover:bg-yellow-700 text-white p-4 rounded-lg font-semibold transition-all">📅 行事曆</button>
+                <button type="button" id="showPasswordSettingsBtn" class="admin-nav-btn bg-purple-600 hover:bg-purple-700 text-white p-4 rounded-lg font-semibold transition-all">🔑 密碼設定</button>
             </div>
-            <div id="addMemberSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="addMemberSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">新增導生</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -251,28 +253,38 @@
                     </div>
                 </div>
             </div>
-            <div id="memberRankingSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="memberRankingSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">導生排行榜</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div class="space-y-3" id="adminRankingList"></div>
             </div>
-            <div id="memberManagementSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="memberManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">導生管理</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div id="adminManagementList"></div>
             </div>
-            <div id="guestListAdminSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="taskManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-white">任務管理</h2>
+                    <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
+                </div>
+                <div class="mb-4">
+                    <button type="button" id="showAddTaskModalBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-semibold transition-all">＋ 新增任務</button>
+                </div>
+                <div id="adminTaskList" class="space-y-3"></div>
+            </div>
+            <div id="guestListAdminSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                  <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">來賓管理名單</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
                 </div>
                 <div id="adminGuestListContainer"></div>
             </div>
-            <div id="calendarManagementSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="calendarManagementSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                    <h2 class="text-xl font-semibold text-white">行事曆管理</h2>
                    <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -291,7 +303,7 @@
                    <div id="adminCalendarList" class="space-y-3"></div>
                </div>
            </div>
-            <div id="passwordSettingsSection" class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
+            <div id="passwordSettingsSection" class="admin-section bg-white/10 backdrop-blur-lg rounded-2xl p-6 mb-6 border border-white/20 hidden">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-semibold text-white">密碼設定</h2>
                     <button type="button" class="hide-section-btn px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-sm transition-all">收起</button>
@@ -314,6 +326,7 @@
             </div>
         </div>
     </div>
+
     <div id="memberTaskModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-6 max-w-4xl max-h-[80vh] overflow-y-auto mx-4 w-full" id="memberTaskModalContentWrapper">
             <div class="flex justify-between items-center mb-4">
@@ -323,6 +336,100 @@
             <div id="memberTaskModalContent"></div>
         </div>
     </div>
+
+    <div id="taskEditModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-2xl max-h-[90vh] overflow-y-auto mx-4 w-full">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-xl font-bold text-gray-800" id="taskEditModalTitle">編輯任務</h3>
+                <button type="button" id="closeTaskEditModalBtn" class="text-gray-500 hover:text-gray-700 text-2xl">×</button>
+            </div>
+            <form id="taskEditForm" class="space-y-4">
+                <input type="hidden" id="taskEditId">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="taskTitle" class="block text-sm font-medium text-gray-700">任務標題</label>
+                        <input type="text" id="taskTitle" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="taskReward" class="block text-sm font-medium text-gray-700">任務獎勵</label>
+                        <input type="text" id="taskReward" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="taskDescription" class="block text-sm font-medium text-gray-700">任務描述</label>
+                    <textarea id="taskDescription" rows="2" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+                 <div>
+                    <label for="taskCompletionCondition" class="block text-sm font-medium text-gray-700">完成條件</label>
+                    <input type="text" id="taskCompletionCondition" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="taskIcon" class="block text-sm font-medium text-gray-700">圖示</label>
+                        <select id="taskIcon" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    </div>
+                    <div>
+                        <label for="taskDifficulty" class="block text-sm font-medium text-gray-700">難度</label>
+                        <select id="taskDifficulty" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option>基礎</option>
+                            <option>進階</option>
+                            <option>考核</option>
+                            <option>選修</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="taskCategory" class="block text-sm font-medium text-gray-700">分類</label>
+                        <select id="taskCategory" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label for="taskVideoUrl" class="block text-sm font-medium text-gray-700">影片連結 (選填)</label>
+                        <input type="url" id="taskVideoUrl" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="taskFbUrl" class="block text-sm font-medium text-gray-700">FB連結 (選填)</label>
+                        <input type="url" id="taskFbUrl" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                    <div>
+                        <label for="taskCourseUrl" class="block text-sm font-medium text-gray-700">課程連結 (選填)</label>
+                        <input type="url" id="taskCourseUrl" placeholder="https://..." class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+                </div>
+                <div>
+                    <label for="taskWeeklyTopics" class="block text-sm font-medium text-gray-700">八週主題 (選填)</label>
+                    <textarea id="taskWeeklyTopics" rows="3" placeholder="W1:主題一 W2:主題二 ..." class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"></textarea>
+                </div>
+                <div class="flex items-start space-x-8">
+                    <div class="relative flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="taskIsRequired" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="taskIsRequired" class="font-medium text-gray-700">此為必修任務</label>
+                        </div>
+                    </div>
+                    <div class="relative flex items-start">
+                        <div class="flex items-center h-5">
+                            <input id="taskIsCountable" type="checkbox" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded">
+                        </div>
+                        <div class="ml-3 text-sm">
+                            <label for="taskIsCountable" class="font-medium text-gray-700">此為計次任務</label>
+                        </div>
+                    </div>
+                </div>
+                <div id="taskCountableSettings" class="hidden">
+                    <label for="taskTargetCount" class="block text-sm font-medium text-gray-700">目標次數</label>
+                    <input type="number" id="taskTargetCount" min="1" value="1" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                </div>
+                <div class="flex justify-end space-x-3 pt-4">
+                    <button type="button" id="cancelTaskEditBtn" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300">取消</button>
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700">儲存變更</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
@@ -334,58 +441,41 @@
             const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
             
             let currentMember = null;
-            let tasks = []; 
-            
-            const tasksTemplate = [
-                { id: 1, title: "新手包", description: "收到區域寄送的導生新手包", icon: "📦", difficulty: "基礎", reward: "新手資料包", category: "入門準備", completionCondition: "收到區域寄送的導生新手包", isRequired: true },
-                { id: 2, title: "名牌", description: "製作個人專屬的BNI名牌", icon: "🏷️", difficulty: "基礎", reward: "個人名牌", category: "入門準備", completionCondition: "製作名牌", isRequired: true },
-                { id: 3, title: "參加25s專業簡報培訓", description: "觀看25秒專業簡報教學影片", icon: "🎤", difficulty: "基礎", reward: "簡報技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 4, title: "【導師考核】每周25s專業簡報", description: "通過導師考核，展示25秒專業簡報能力", icon: "✅", difficulty: "考核", reward: "簡報認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 5, title: "【導師考核】25秒自我介紹及Slogan", description: "完成25秒自我介紹和個人Slogan展示", icon: "🗣️", difficulty: "考核", reward: "自我介紹認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 6, title: "參加Connect系統開通&操作培訓", description: "觀看Connect系統教學影片(共2部)", icon: "💻", difficulty: "基礎", reward: "系統操作技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 7, title: "【導師考核】Connect系統開通&操作", description: "通過Connect系統開通&操作考核", icon: "🔗", difficulty: "考核", reward: "系統操作認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 8, title: "參加目標設定培訓", description: "觀看目標設定教學影片", icon: "🎯", difficulty: "基礎", reward: "目標規劃技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 9, title: "【導師考核】目標設定", description: "完成個人目標設定並通過導師考核", icon: "📊", difficulty: "考核", reward: "目標設定認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 10, title: "參加人脈合作變現表培訓", description: "觀看人脈合作變現表教學影片", icon: "💰", difficulty: "進階", reward: "變現技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 11, title: "【導師考核】人脈合作變現表", description: "完成人脈合作變現表並通過考核", icon: "💎", difficulty: "考核", reward: "變現表認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 12, title: "新會員見面會", description: "參與每月一次由區域排定時間的新人見面會", icon: "🤝", difficulty: "基礎", reward: "人脈建立", category: "實體活動", completionCondition: "參與每月一次由區域排定時間的新人見面會(一個月只有一次很重要)", isRequired: true },
-                { id: 13, title: "FB區域粉專按讚", description: "雲貴分會FB點讚", icon: "👍", difficulty: "基礎", reward: "社群連結", category: "社交活動", completionCondition: "雲貴分會FB點讚", fbUrl: "https://www.facebook.com/bni.yungui", isRequired: true },
-                { id: 14, title: "初階MSP", description: "報名區域培訓課程(與進階MSP擇一即可)", icon: "📈", difficulty: "進階", reward: "初階MSP證書", category: "線上課程", completionCondition: "報名區域培訓課程(與15項擇一即可)", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: true },
-                { id: 15, title: "進階MSP", description: "報名區域培訓課程(與初階MSP擇一即可)", icon: "🚀", difficulty: "進階", reward: "進階MSP證書", category: "線上課程", completionCondition: "報名區域培訓課程(與14項擇一即可)", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: true },
-                { id: 16, title: "會員成功藍圖", description: "參與導師八周特定主題", icon: "🗺️", difficulty: "進階", reward: "成功藍圖", category: "導師八周", completionCondition: "參與導師八周特定主題", isRequired: true },
-                { id: 17, title: "新會員護照", description: "參與導師八周特定主題", icon: "📘", difficulty: "進階", reward: "導生護照", category: "導師八周", completionCondition: "參與導師八周特定主題", isRequired: true },
-                { id: 18, title: "導師八周", description: "參與4次每周四導師八周", icon: "🧙‍♂️", difficulty: "進階", reward: "導師指導完成證書", category: "導師八周", completionCondition: "參與4次每周四導師八周", weeklyTopics: "W1:導生成功藍圖/出席的重要性 W2:行政小組運作/明確目標 W3:新導生護照/告訴我們怎麼說 W4:邀約來賓心法與技巧/帶來小道具 W5:導生成功藍圖/非同凡響的見證 W6:行政小組運作/一對一會面 W7:新導生護照/為什麼要帶來賓 W8:邀約來賓心法與技巧/我們應該怎麼做", isRequired: true, isCountable: true, targetCount: 4 },
-                { id: 19, title: "全國分享會", description: "參與每周一全國分享會1次", icon: "🌟", difficulty: "進階", reward: "全國視野", category: "大型活動", completionCondition: "參與每周一全國分享會1次", isRequired: true },
-                { id: 20, title: "參加紅綠燈計算培訓", description: "觀看紅綠燈計算教學影片", icon: "🚦", difficulty: "進階", reward: "分析技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 21, title: "【導師考核】紅綠燈計算", description: "通過紅綠燈計算方法考核", icon: "📊", difficulty: "考核", reward: "分析認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 22, title: "導師示範一對一", description: "邀約導師由導師示範一對一", icon: "👁️", difficulty: "進階", reward: "實戰經驗", category: "實戰學習", completionCondition: "邀約導師由導師示範一對一", isRequired: true },
-                { id: 23, title: "參加1-1表格 1、2表培訓", description: "觀看1-1表格教學影片", icon: "📋", difficulty: "進階", reward: "表格技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 24, title: "【導師考核】完成1-1表格 1、2表", description: "完成1-1表格1、2表並通過考核", icon: "✍️", difficulty: "考核", reward: "表格認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 25, title: "參加1-1表格 3、4表培訓", description: "觀看1-1表格教學影片", icon: "📄", difficulty: "進階", reward: "進階表格技能", category: "影片培訓", completionCondition: "觀看教學影片", videoUrl: "https://www.youtube.com/playlist?list=PLTMduYKemBTo1Vcmefgg7QhBL8oT4Ypkf", isRequired: true },
-                { id: 26, title: "【導師考核】完成1-1表格 3、4表", description: "完成1-1表格3、4表並通過考核", icon: "📝", difficulty: "考核", reward: "進階表格認證", category: "導師考核", completionCondition: "導師考核", isRequired: true },
-                { id: 27, title: "簡報工作坊(選修)", description: "報名區域培訓課程", icon: "🎪", difficulty: "選修", reward: "簡報專精技能", category: "選修課程", completionCondition: "報名區域培訓課程", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: false },
-                { id: 28, title: "一對一工作坊(選修)", description: "報名區域培訓課程", icon: "👥", difficulty: "選修", reward: "面談技能", category: "選修課程", completionCondition: "報名區域培訓課程", courseUrl: "https://ally.nime.com.tw/html/memberLogin", isRequired: false },
-                { id: 29, title: "與導師一對一(選修)", description: "邀約導師進行一對一面談", icon: "🎯", difficulty: "選修", reward: "導師指導", category: "選修課程", completionCondition: "邀約導師一對一", isRequired: false },
-                { id: 30, title: "與董顧大使一對一(選修)", description: "邀約董事顧問大使進行一對一面談", icon: "👔", difficulty: "選修", reward: "高階指導", category: "選修課程", completionCondition: "邀約董顧大使一對一", isRequired: false },
-                { id: 31, title: "與九長一對一(選修)", description: "邀約九長進行一對一面談交流", icon: "🏆", difficulty: "選修", reward: "領導指導", category: "選修課程", completionCondition: "邀約九長一對一", isRequired: false }
-            ];
+            let tasks = [];
+            let tasksMaster = []; // Will hold task templates fetched from Supabase
+
+            async function fetchMasterTasks() {
+                const { data, error } = await supabaseClient
+                    .from('tasks_master')
+                    .select('*')
+                    .order('id', { ascending: true });
+
+                if (error) {
+                    console.error("CRITICAL: Failed to load task templates from database.", error);
+                    alert("無法載入核心任務設定，頁面可能無法正常運作。請重新整理或聯繫管理員。");
+                    return;
+                }
+                tasksMaster = data;
+            }
 
             function getInitialTasksForDB() {
-                return tasksTemplate.map(task => ({
+                // Now uses the fetched tasksMaster
+                return tasksMaster.map(task => ({
                     id: task.id,
                     status: 'not-started',
-                    currentCount: task.isCountable ? 0 : undefined
+                    currentCount: task.isCountable ? 0 : null
                 }));
             }
             
             function loadTasksFromMemberData(memberTasksProgress) {
                 if (!memberTasksProgress) memberTasksProgress = [];
-                tasks = tasksTemplate.map(templateTask => {
+                // Merges master templates with member's progress
+                tasks = tasksMaster.map(templateTask => {
                     const progress = memberTasksProgress.find(p => p.id === templateTask.id);
                     return {
                         ...templateTask,
                         status: progress ? progress.status : 'not-started',
-                        currentCount: progress ? progress.currentCount : (templateTask.isCountable ? 0 : undefined),
+                        currentCount: progress ? progress.currentCount : (templateTask.isCountable ? 0 : null),
                     };
                 });
             }
@@ -452,7 +542,7 @@
                 const tasksProgressToSave = tasks.map(t => ({
                     id: t.id,
                     status: t.status,
-                    currentCount: t.isCountable ? t.currentCount : undefined
+                    currentCount: t.isCountable ? t.currentCount : null
                 }));
 
                 const { error } = await supabaseClient
@@ -602,13 +692,13 @@
             }
             
             function calculateMemberProgress(memberTasks) {
-                if (!memberTasks) return { completedCount: 0, totalCount: 0, percentage: 0, completed: 0, inProgress: 0 };
+                if (!memberTasks || !tasksMaster.length) return { completedCount: 0, totalCount: 0, percentage: 0, completed: 0, inProgress: 0 };
                 let requiredCompletedCount = 0, requiredTotalCount = 0, mspProcessed = false;
                 const completed = memberTasks.filter(t => t.status === 'completed').length;
                 const inProgress = memberTasks.filter(t => t.status === 'in-progress').length;
-                tasksTemplate.filter(t => t.isRequired).forEach(task => {
+                tasksMaster.filter(t => t.isRequired).forEach(task => {
                     const memberTask = memberTasks.find(mt => mt.id === task.id);
-                    if (task.id === 14 || task.id === 15) {
+                    if (task.id === 14 || task.id === 15) { // Special handling for MSP
                         if (!mspProcessed) {
                             requiredTotalCount++;
                             if (memberTasks.some(mt => (mt.id === 14 || mt.id === 15) && mt.status === 'completed')) requiredCompletedCount++;
@@ -627,16 +717,19 @@
             }
 
             function generateCategoryFilters() {
-                const categories = [...new Set(tasksTemplate.map(task => task.category))];
+                const categories = [...new Set(tasksMaster.map(task => task.category))];
                 const container = document.getElementById('categoryFilters');
                 const allButton = container.querySelector('[data-category="all"]');
                 container.innerHTML = '';
                 container.appendChild(allButton);
-                const requiredCount = tasksTemplate.filter(t => t.isRequired).length;
-                const optionalCount = tasksTemplate.filter(t => !t.isRequired).length;
-                allButton.textContent = `全部 (${requiredCount - 1}必修+${optionalCount}選修)`;
+                const requiredCount = tasksMaster.filter(t => t.isRequired).length;
+                const optionalCount = tasksMaster.filter(t => !t.isRequired).length;
+                const mspCount = tasksMaster.some(t => t.id === 14 || t.id === 15) ? 1 : 0;
+                allButton.textContent = `全部 (${requiredCount - mspCount}必修+${optionalCount}選修)`;
+                
                 categories.forEach(category => {
-                    const count = tasksTemplate.filter(task => task.category === category).length;
+                    if(!category) return;
+                    const count = tasksMaster.filter(task => task.category === category).length;
                     const button = document.createElement('button');
                     button.type = 'button';
                     button.className = 'category-filter bg-white/10 backdrop-blur-lg px-4 py-2 rounded-full text-white text-base font-medium border border-white/20';
@@ -655,6 +748,11 @@
             function renderTasks() {
                 const container = document.getElementById('taskContainer');
                 container.innerHTML = '';
+                if (!tasks.length) {
+                    container.innerHTML = `<div class="text-center text-white py-10 col-span-full">任務載入中...</div>`
+                    return;
+                }
+
                 const filteredTasks = currentFilter === 'all' ? tasks : tasks.filter(task => task.category === currentFilter);
                 filteredTasks.forEach(task => {
                     const statusClass = task.status === 'completed' ? 'completed' : task.status === 'in-progress' ? 'in-progress' : 'not-started';
@@ -666,7 +764,7 @@
                     card.className = `task-card bg-white/10 backdrop-blur-lg rounded-2xl p-5 border border-white/20 ${statusClass}`;
                     card.innerHTML = `
                         <div class="flex items-start justify-between mb-3"><div class="text-3xl">${task.icon}</div><div class="flex items-center space-x-2"><span class="text-sm ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusIcon}</span><span class="text-xs ${statusIcon === '✅' ? 'text-green-300' : statusIcon === '⏳' ? 'text-yellow-300' : 'text-blue-300'}">${statusText}</span></div></div>
-                        <h3 class="text-xl font-semibold text-white mb-2 leading-tight">${task.title}</h3> <p class="text-blue-200 mb-3 text-base leading-relaxed">${task.description}</p> ${countDisplay}
+                        <h3 class="text-xl font-semibold text-white mb-2 leading-tight">${task.title}</h3> <p class="text-blue-200 mb-3 text-base leading-relaxed">${task.description || ''}</p> ${countDisplay}
                         <div class="flex items-center justify-between mb-3"><span class="text-sm ${difficultyColor} font-medium px-2 py-1 bg-white/10 rounded">${task.difficulty}</span><span class="text-sm text-purple-300">🎁 ${task.reward}</span></div>
                         <div class="text-sm text-blue-300 mb-3">${task.category}</div>
                         <div class="bg-white/5 rounded-lg p-3 mb-3">
@@ -716,12 +814,9 @@
                 setTimeout(() => { modal.querySelector('div').classList.remove('scale-95'); modal.querySelector('div').classList.add('scale-100'); }, 10);
             }
 
-            // =====[ START: NEW/MODIFIED CODE BLOCK ]=====
-
-            // NEW SHARED FUNCTION: Checks progress and sets graduation date if needed.
             async function checkAndSetGraduation(member) {
                 if (!member || member.graduated_at) {
-                    return; // Exit if no member data or already graduated
+                    return;
                 }
 
                 const progress = calculateMemberProgress(member.tasks);
@@ -735,7 +830,6 @@
                         console.error(`Failed to set graduation date for member ${member.id}:`, error);
                     } else {
                         console.log(`Graduation date set for member ${member.id}`);
-                        // Update the local object to prevent re-triggering
                         member.graduated_at = new Date().toISOString();
                     }
                 }
@@ -746,6 +840,11 @@
                 const inProgress = tasks.filter(t => t.status === 'in-progress').length;
                 const notStarted = tasks.filter(t => t.status === 'not-started').length;
                 const progress = calculateMemberProgress(tasks);
+                
+                const requiredTotal = tasksMaster.filter(t => t.isRequired).length;
+                const mspCount = tasksMaster.some(t => t.id === 14 || t.id === 15) ? 1 : 0;
+                document.getElementById('totalTasks').textContent = requiredTotal - mspCount;
+
                 document.getElementById('completedCount').textContent = `${progress.completedCount}/${progress.totalCount}`;
                 document.getElementById('completedTasks').textContent = completed;
                 document.getElementById('inProgressTasks').textContent = inProgress;
@@ -757,15 +856,12 @@
                 circle.style.strokeDashoffset = offset;
                 
                 if (progress.percentage >= 100) {
-                    // MODIFIED: Call the shared function
                     checkAndSetGraduation(currentMember); 
                     if (!localStorage.getItem('graduationCelebrated')) {
                         setTimeout(() => { showGraduationCelebration(); localStorage.setItem('graduationCelebrated', 'true'); }, 1000);
                     }
                 }
             }
-            
-            // =====[ END: NEW/MODIFIED CODE BLOCK ]=====
             
             function openExternalLink(url) {
                 window.open(url, '_blank', 'noopener,noreferrer');
@@ -789,18 +885,18 @@
             }
             function showAdminPanel() { document.getElementById('adminPanelScreen').classList.remove('hidden'); hideAdminSections(); }
             function hideAdminPanel() { document.getElementById('adminPanelScreen').classList.add('hidden'); document.getElementById('loginScreen').classList.remove('hidden'); showLoginRanking(); }
-            function hideAdminSections() {
-                document.getElementById('addMemberSection').classList.add('hidden');
-                document.getElementById('memberRankingSection').classList.add('hidden');
-                document.getElementById('memberManagementSection').classList.add('hidden');
-                document.getElementById('passwordSettingsSection').classList.add('hidden');
-                document.getElementById('guestListAdminSection')?.classList.add('hidden');
-                document.getElementById('calendarManagementSection')?.classList.add('hidden');
+            
+            function hideAdminSections(activeBtnId = null) {
+                 document.querySelectorAll('.admin-section').forEach(s => s.classList.add('hidden'));
+                 document.querySelectorAll('.admin-nav-btn').forEach(b => b.classList.remove('active'));
+                 if (activeBtnId) {
+                     document.getElementById(activeBtnId)?.classList.add('active');
+                 }
             }
-            function showAddMember() { hideAdminSections(); document.getElementById('addMemberSection').classList.remove('hidden'); }
+            function showAddMember() { hideAdminSections('showAddMemberBtn'); document.getElementById('addMemberSection').classList.remove('hidden'); }
             
             async function showMemberList() {
-                hideAdminSections();
+                hideAdminSections('showMemberListBtn');
                 const container = document.getElementById('adminRankingList');
                 container.innerHTML = `<div class="text-white text-center p-8">正在從雲端載入排行榜...</div>`;
                 document.getElementById('memberRankingSection').classList.remove('hidden');
@@ -867,7 +963,7 @@
             }
             
             async function showMemberManagement() {
-                hideAdminSections();
+                hideAdminSections('showMemberMgmtBtn');
                 const container = document.getElementById('adminManagementList');
                 container.innerHTML = `<div class="text-white text-center p-8">正在從雲端載入導生列表...</div>`;
                 document.getElementById('memberManagementSection').classList.remove('hidden');
@@ -966,7 +1062,7 @@
             
             function _renderAdminTasks(member, container) {
                 let memberTasksProgress = member.tasks || [];
-                container.innerHTML = tasksTemplate.map(taskTpl => {
+                container.innerHTML = tasksMaster.map(taskTpl => {
                     const taskProgress = memberTasksProgress.find(p => p.id === taskTpl.id) || { id: taskTpl.id, status: 'not-started', currentCount: 0 };
                     const statusOptions = ['not-started', 'in-progress', 'completed']
                         .map(s => `<option value="${s}" ${taskProgress.status === s ? 'selected' : ''}>${s === 'not-started' ? '未開始' : s === 'in-progress' ? '進行中' : '已完成'}</option>`)
@@ -1006,27 +1102,27 @@
             }
             window.showMemberTasksModal = showMemberTasksModal;
 
-            // =====[ START: MODIFIED CODE BLOCK ]=====
             async function adminUpdateTask(memberId, taskId, newStatus, newCount) {
                 if (!currentlyEditingMember || currentlyEditingMember.id !== memberId) return;
 
                 const contentWrapper = document.getElementById('memberTaskModalContentWrapper');
                 const scrollPosition = contentWrapper.scrollTop;
                 
-                const taskIndex = currentlyEditingMember.tasks.findIndex(t => t.id === taskId);
+                let taskProgress = currentlyEditingMember.tasks.find(t => t.id === taskId);
+                const taskTpl = tasksMaster.find(t => t.id === taskId);
                 
-                if (taskIndex !== -1) {
-                    const task = currentlyEditingMember.tasks[taskIndex];
-                    if (newStatus !== null) task.status = newStatus;
-                    if (newCount !== null) task.currentCount = newCount;
-                    const taskTpl = tasksTemplate.find(t => t.id === taskId);
-                    if (taskTpl.isCountable) {
-                        if (task.currentCount > 0 && task.currentCount < taskTpl.targetCount) task.status = 'in-progress';
-                        else if (task.currentCount >= taskTpl.targetCount) task.status = 'completed';
-                        else task.status = 'not-started';
-                    }
-                } else {
-                     currentlyEditingMember.tasks.push({ id: taskId, status: newStatus || 'not-started', currentCount: newCount });
+                if (!taskProgress) {
+                    taskProgress = { id: taskId, status: 'not-started', currentCount: 0 };
+                    currentlyEditingMember.tasks.push(taskProgress);
+                }
+
+                if (newStatus !== null) taskProgress.status = newStatus;
+                if (newCount !== null) taskProgress.currentCount = newCount;
+                
+                if (taskTpl.isCountable) {
+                    if (taskProgress.currentCount > 0 && taskProgress.currentCount < taskTpl.targetCount) taskProgress.status = 'in-progress';
+                    else if (taskProgress.currentCount >= taskTpl.targetCount) taskProgress.status = 'completed';
+                    else taskProgress.status = 'not-started';
                 }
 
                 const { error } = await supabaseClient
@@ -1037,13 +1133,11 @@
                 if (error) {
                     alert('更新失敗: ' + error.message);
                 } else {
-                    // MODIFIED: Call the shared graduation check function after a successful update
                     await checkAndSetGraduation(currentlyEditingMember);
                     _renderAdminTasks(currentlyEditingMember, document.getElementById('memberTaskModalContent'));
                     contentWrapper.scrollTop = scrollPosition;
                 }
             }
-            // =====[ END: MODIFIED CODE BLOCK ]=====
             window.adminUpdateTask = adminUpdateTask;
 
             function closeMemberTaskModal() {
@@ -1054,7 +1148,7 @@
                 showMemberManagement();
             }
 
-            function showPasswordSettings() { hideAdminSections(); document.getElementById('passwordSettingsSection').classList.remove('hidden'); }
+            function showPasswordSettings() { hideAdminSections('showPasswordSettingsBtn'); document.getElementById('passwordSettingsSection').classList.remove('hidden'); }
             function changeAdminPassword() {
                 const oldPassword = document.getElementById('oldAdminPassword').value;
                 const newPassword = document.getElementById('newAdminPassword').value;
@@ -1083,9 +1177,156 @@
                           .replace(/>/g, "&gt;");
             }
 
+            // ★★★ 任務管理功能 (JS) START ★★★
+            async function showTaskManagement() {
+                hideAdminSections('showTaskMgmtBtn');
+                const container = document.getElementById('adminTaskList');
+                container.innerHTML = `<div class="text-white text-center p-8">正在載入任務列表...</div>`;
+                document.getElementById('taskManagementSection').classList.remove('hidden');
+
+                await fetchMasterTasks(); // Ensure we have the latest
+                renderAdminTaskList();
+            }
+
+            function renderAdminTaskList() {
+                const container = document.getElementById('adminTaskList');
+                if (tasksMaster.length === 0) {
+                     container.innerHTML = '<div class="text-center text-blue-300 py-8">目前沒有任何任務</div>';
+                     return;
+                }
+                container.innerHTML = tasksMaster.map(task => `
+                     <div class="bg-white/5 rounded-lg p-4 mb-3">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                            <div class="flex items-center space-x-3 mb-3 sm:mb-0">
+                                <div class="text-2xl">${task.icon}</div>
+                                <div>
+                                    <h3 class="text-white font-semibold">${task.title} ${task.isRequired ? '' : '<span class="text-xs text-purple-300">(選修)</span>'}</h3>
+                                    <p class="text-blue-200 text-sm">${task.category} - ${task.difficulty}</p>
+                                </div>
+                            </div>
+                            <div class="flex flex-wrap gap-2 justify-start sm:justify-end">
+                                <button type="button" onclick="openTaskEditModal(${task.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button>
+                                <button type="button" onclick="deleteMasterTask(${task.id}, '${escapeHTML(task.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                            </div>
+                        </div>
+                    </div>`).join('');
+            }
+            window.openTaskEditModal = (taskId = null) => {
+                const modal = document.getElementById('taskEditModal');
+                const form = document.getElementById('taskEditForm');
+                const title = document.getElementById('taskEditModalTitle');
+                form.reset();
+                document.getElementById('taskCountableSettings').classList.add('hidden');
+
+                populateDropdowns();
+
+                if (taskId) {
+                    title.textContent = '編輯任務';
+                    const task = tasksMaster.find(t => t.id === taskId);
+                    document.getElementById('taskEditId').value = task.id;
+                    document.getElementById('taskTitle').value = task.title;
+                    document.getElementById('taskDescription').value = task.description || '';
+                    document.getElementById('taskReward').value = task.reward || '';
+                    document.getElementById('taskCompletionCondition').value = task.completionCondition || '';
+                    document.getElementById('taskIcon').value = task.icon;
+                    document.getElementById('taskDifficulty').value = task.difficulty;
+                    document.getElementById('taskCategory').value = task.category;
+                    document.getElementById('taskVideoUrl').value = task.videoUrl || '';
+                    document.getElementById('taskFbUrl').value = task.fbUrl || '';
+                    document.getElementById('taskCourseUrl').value = task.courseUrl || '';
+                    document.getElementById('taskWeeklyTopics').value = task.weeklyTopics || '';
+                    document.getElementById('taskIsRequired').checked = task.isRequired;
+                    document.getElementById('taskIsCountable').checked = task.isCountable;
+                    if (task.isCountable) {
+                        document.getElementById('taskCountableSettings').classList.remove('hidden');
+                        document.getElementById('taskTargetCount').value = task.targetCount;
+                    }
+                } else {
+                    title.textContent = '新增任務';
+                    document.getElementById('taskEditId').value = '';
+                }
+                modal.classList.remove('hidden');
+                modal.classList.add('flex');
+            }
+            
+            function populateDropdowns() {
+                 const iconSelect = document.getElementById('taskIcon');
+                 const icons = ['📦','🏷️','🎤','✅','🗣️','💻','🔗','🎯','📊','💰','💎','🤝','👍','📈','🚀','🗺️','📘','🧙‍♂️','🌟','🚦','👁️','📋','✍️','📄','📝','🎪','👥','👔','🏆','💡','💬','🎉','📞','🏢','📈','🤝','🚀','💡','🎯','💬','🛠️','⚙️','📚','🎓','📝','💼','📈','📊','🔗','🤝','💡','🎯','💬','🛠️','⚙️','📚','🎓','📝','💼'];
+                 iconSelect.innerHTML = [...new Set(icons)].map(icon => `<option value="${icon}">${icon}</option>`).join('');
+
+                 const categorySelect = document.getElementById('taskCategory');
+                 const categories = [...new Set(tasksMaster.map(t => t.category).filter(Boolean))];
+                 categorySelect.innerHTML = categories.map(cat => `<option value="${cat}">${cat}</option>`).join('') + '<option value="new">--新增分類--</option>';
+            }
+
+            function closeTaskEditModal() {
+                 const modal = document.getElementById('taskEditModal');
+                 modal.classList.add('hidden');
+                 modal.classList.remove('flex');
+            }
+
+            async function handleTaskFormSubmit(event) {
+                event.preventDefault();
+                const taskId = document.getElementById('taskEditId').value;
+                let category = document.getElementById('taskCategory').value;
+                if (category === 'new') {
+                    const newCategory = prompt("請輸入新的分類名稱：");
+                    if (!newCategory || newCategory.trim() === '') return;
+                    category = newCategory.trim();
+                }
+
+                const taskData = {
+                    title: document.getElementById('taskTitle').value,
+                    description: document.getElementById('taskDescription').value,
+                    reward: document.getElementById('taskReward').value,
+                    completionCondition: document.getElementById('taskCompletionCondition').value,
+                    icon: document.getElementById('taskIcon').value,
+                    difficulty: document.getElementById('taskDifficulty').value,
+                    category: category,
+                    videoUrl: document.getElementById('taskVideoUrl').value || null,
+                    fbUrl: document.getElementById('taskFbUrl').value || null,
+                    courseUrl: document.getElementById('taskCourseUrl').value || null,
+                    weeklyTopics: document.getElementById('taskWeeklyTopics').value || null,
+                    isRequired: document.getElementById('taskIsRequired').checked,
+                    isCountable: document.getElementById('taskIsCountable').checked,
+                    targetCount: document.getElementById('taskIsCountable').checked ? parseInt(document.getElementById('taskTargetCount').value) : 1,
+                };
+                
+                let error;
+                if (taskId) { // Update
+                    const { error: updateError } = await supabaseClient.from('tasks_master').update(taskData).eq('id', taskId);
+                    error = updateError;
+                } else { // Insert
+                    const { error: insertError } = await supabaseClient.from('tasks_master').insert(taskData);
+                    error = insertError;
+                }
+
+                if (error) {
+                    alert('儲存失敗：' + error.message);
+                } else {
+                    alert('任務已成功儲存！');
+                    closeTaskEditModal();
+                    await showTaskManagement(); // Refresh list
+                }
+            }
+
+            async function deleteMasterTask(taskId, taskTitle) {
+                if (confirm(`⚠️ 確定要永久刪除任務 "${taskTitle}" 嗎？\n此操作無法復原，且會影響所有導生的進度計算。`)) {
+                    const { error } = await supabaseClient.from('tasks_master').delete().eq('id', taskId);
+                    if (error) {
+                        alert('刪除失敗：' + error.message);
+                    } else {
+                        alert('任務已成功刪除。');
+                        await showTaskManagement(); // Refresh list
+                    }
+                }
+            }
+            window.deleteMasterTask = deleteMasterTask;
+            // ★★★ 任務管理功能 (JS) END ★★★
+
             // ★★★ 來賓名單功能 (JS) START ★★★
             async function showGuestList() {
-                hideAdminSections();
+                hideAdminSections('showGuestListBtn');
                 const container = document.getElementById('adminGuestListContainer');
                 container.innerHTML = `<div class="text-white text-center p-8">正在載入來賓列表...</div>`;
                 document.getElementById('guestListAdminSection').classList.remove('hidden');
@@ -1272,7 +1513,7 @@
             }
             
             async function showCalendarManagement() {
-                hideAdminSections();
+                hideAdminSections('showCalendarMgmtBtn');
                 const container = document.getElementById('adminCalendarList');
                 container.innerHTML = `<div class="text-white text-center p-8">正在載入活動列表...</div>`;
                 document.getElementById('calendarManagementSection').classList.remove('hidden');
@@ -1374,7 +1615,9 @@
                 rootElement.style.fontSize = newSize + 'px';
             };
             
-            document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('DOMContentLoaded', async function() {
+                await fetchMasterTasks(); // Load tasks on start
+
                 document.getElementById('loginButton')?.addEventListener('click', handleLogin);
                 document.getElementById('memberName')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
                 document.getElementById('memberPassword')?.addEventListener('keypress', e => { if (e.key === 'Enter') handleLogin(); });
@@ -1390,7 +1633,7 @@
                 document.getElementById('changePasswordBtn')?.addEventListener('click', changeAdminPassword);
                 document.getElementById('clearAllDataBtn')?.addEventListener('click', clearAllData);
                 document.getElementById('hideAdminPanelBtn')?.addEventListener('click', hideAdminPanel);
-                document.querySelectorAll('.hide-section-btn').forEach(btn => btn.addEventListener('click', hideAdminSections));
+                document.querySelectorAll('.hide-section-btn').forEach(btn => btn.addEventListener('click', () => hideAdminSections()));
                 document.getElementById('logoutBtn')?.addEventListener('click', logout);
                 document.getElementById('closeCelebrationBtn')?.addEventListener('click', closeCelebration);
                 document.getElementById('closeMemberTaskBtn')?.addEventListener('click', closeMemberTaskModal);
@@ -1399,6 +1642,7 @@
                 document.getElementById('decreaseFont')?.addEventListener('click', () => updateFontSize(-1));
                 document.getElementById('resetFont')?.addEventListener('click', () => { document.documentElement.style.fontSize = ''; });
 
+                // Guest events
                 document.getElementById('toggleGuestSectionBtn')?.addEventListener('click', () => {
                     document.getElementById('guestFormSection').classList.toggle('hidden');
                 });
@@ -1409,9 +1653,30 @@
                 document.getElementById('showCalendarMgmtBtn')?.addEventListener('click', showCalendarManagement);
                 document.getElementById('addEventBtn')?.addEventListener('click', addCalendarEvent);
 
+                // Task Management events
+                document.getElementById('showTaskMgmtBtn')?.addEventListener('click', showTaskManagement);
+                document.getElementById('showAddTaskModalBtn')?.addEventListener('click', () => openTaskEditModal());
+                document.getElementById('closeTaskEditModalBtn')?.addEventListener('click', closeTaskEditModal);
+                document.getElementById('cancelTaskEditBtn')?.addEventListener('click', closeTaskEditModal);
+                document.getElementById('taskEditForm')?.addEventListener('submit', handleTaskFormSubmit);
+                document.getElementById('taskIsCountable').addEventListener('change', (e) => {
+                    document.getElementById('taskCountableSettings').classList.toggle('hidden', !e.target.checked);
+                });
+                document.getElementById('taskCategory').addEventListener('change', (e) => {
+                     if (e.target.value === 'new') {
+                        const newCategory = prompt("請輸入新的分類名稱：");
+                        if (newCategory && newCategory.trim() !== '') {
+                            const option = new Option(newCategory.trim(), newCategory.trim(), true, true);
+                            e.target.add(option, e.target.options[e.target.options.length - 1]);
+                        } else {
+                            e.target.value = e.target.options[0].value;
+                        }
+                     }
+                });
 
-                const requiredTotal = tasksTemplate.filter(t => t.isRequired).length;
-                document.getElementById('totalTasks').textContent = requiredTotal - 1;
+                const requiredTotal = tasksMaster.filter(t => t.isRequired).length;
+                const mspCount = tasksMaster.some(t => t.id === 14 || t.id === 15) ? 1 : 0;
+                document.getElementById('totalTasks').textContent = requiredTotal - mspCount;
                 
                 checkSession();
                 showLoginRanking();
@@ -1423,4 +1688,4 @@
     </script>
 </body>
 </html>
-by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V161.2行事曆版本
+by 投嘉雲彰區域 雲貴分會 高屏區水電工程 吳志璘     V162
