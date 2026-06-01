@@ -21,6 +21,9 @@
         * { box-sizing: border-box; }
         .modal-overlay { backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
         .admin-nav-btn.active { background-color: #4f46e5; }
+        .admin-task-item { transition: opacity 0.15s, border-color 0.15s; border: 2px solid transparent; border-radius: 0.5rem; }
+        .admin-task-item.drag-over { border-color: #818cf8; background: rgba(129,140,248,0.1); }
+        .admin-task-item.dragging { opacity: 0.4; }
     </style>
 </head>
 <body class="bg-gradient-to-br from-blue-900 via-indigo-900 to-purple-900 min-h-screen">
@@ -419,6 +422,27 @@
         }
 
         // ─── 任務主表 ────────────────────────────────────────────────
+        // ─── 排序工具 ─────────────────────────────────────────────────
+        function applySortOrder(arr) {
+            const order = JSON.parse(localStorage.getItem('bni_taskSortOrder') || '[]');
+            if (!order.length) return arr;
+            return [...arr].sort((a, b) => {
+                const ai = order.indexOf(a.id), bi = order.indexOf(b.id);
+                if (ai < 0 && bi < 0) return 0;
+                if (ai < 0) return 1;
+                if (bi < 0) return -1;
+                return ai - bi;
+            });
+        }
+
+        async function saveSortOrder() {
+            localStorage.setItem('bni_taskSortOrder', JSON.stringify(tasksMaster.map(t => t.id)));
+            // 若 DB 有 sort_order 欄位則同步
+            await Promise.all(tasksMaster.map((t, i) =>
+                supabaseClient.from('tasks_master').update({ sort_order: i + 1 }).eq('id', t.id)
+            )).catch(() => {});
+        }
+
         async function fetchMasterTasks() {
             const { data, error } = await supabaseClient.from('tasks_master').select('*').order('id', { ascending: true });
             if (error) {
@@ -426,7 +450,11 @@
                 alert('無法載入核心任務設定，請重新整理或聯繫管理員。');
                 return;
             }
-            tasksMaster = data;
+            // 若 DB 有 sort_order 欄位則優先用，否則用 localStorage 順序
+            const hasSortOrder = data.length > 0 && 'sort_order' in data[0] && data.some(t => t.sort_order != null);
+            tasksMaster = hasSortOrder
+                ? [...data].sort((a, b) => (a.sort_order ?? 99999) - (b.sort_order ?? 99999))
+                : applySortOrder(data);
         }
 
         function getInitialTasksForDB() {
@@ -924,7 +952,57 @@
             const container = document.getElementById('adminTaskList');
             if (!tasksMaster.length) { container.innerHTML = '<div class="text-center text-blue-300 py-8">目前沒有任何任務</div>'; return; }
             container.innerHTML = tasksMaster.map(t => `
-                <div class="bg-white/5 rounded-lg p-4 mb-3"><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between"><div class="flex items-center space-x-3 mb-3 sm:mb-0"><div class="text-2xl">${t.icon}</div><div><h3 class="text-white font-semibold">${escHtml(t.title)} ${t.isRequired ? '' : '<span class="text-xs text-purple-300">(選修)</span>'}</h3><p class="text-blue-200 text-sm">${escHtml(t.category)} - ${escHtml(t.difficulty)}</p></div></div><div class="flex gap-2"><button type="button" onclick="openTaskEditModal(${t.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button><button type="button" onclick="deleteMasterTask(${t.id},'${escAttr(t.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button></div></div></div>`).join('');
+                <div class="admin-task-item bg-white/5 p-4 mb-3 cursor-grab active:cursor-grabbing" draggable="true" data-task-id="${t.id}">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between">
+                        <div class="flex items-center space-x-3 mb-3 sm:mb-0">
+                            <span class="text-gray-400 text-lg select-none" title="拖曳排序">⠿</span>
+                            <div class="text-2xl">${t.icon}</div>
+                            <div>
+                                <h3 class="text-white font-semibold">${escHtml(t.title)} ${t.isRequired ? '' : '<span class="text-xs text-purple-300">(選修)</span>'}</h3>
+                                <p class="text-blue-200 text-sm">${escHtml(t.category)} - ${escHtml(t.difficulty)}</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="button" draggable="false" onclick="openTaskEditModal(${t.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button>
+                            <button type="button" draggable="false" onclick="deleteMasterTask(${t.id},'${escAttr(t.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+            makeDraggable(container);
+        }
+
+        function makeDraggable(container) {
+            let dragSrc = null;
+            container.querySelectorAll('.admin-task-item').forEach(item => {
+                item.addEventListener('dragstart', e => {
+                    dragSrc = item;
+                    setTimeout(() => item.classList.add('dragging'), 0);
+                    e.dataTransfer.effectAllowed = 'move';
+                });
+                item.addEventListener('dragend', () => {
+                    item.classList.remove('dragging');
+                    container.querySelectorAll('.admin-task-item').forEach(i => i.classList.remove('drag-over'));
+                });
+                item.addEventListener('dragover', e => {
+                    e.preventDefault();
+                    e.dataTransfer.dropEffect = 'move';
+                    container.querySelectorAll('.admin-task-item').forEach(i => i.classList.remove('drag-over'));
+                    if (item !== dragSrc) item.classList.add('drag-over');
+                });
+                item.addEventListener('dragleave', () => item.classList.remove('drag-over'));
+                item.addEventListener('drop', e => {
+                    e.stopPropagation();
+                    if (!dragSrc || dragSrc === item) return;
+                    const srcId = parseInt(dragSrc.dataset.taskId);
+                    const tgtId = parseInt(item.dataset.taskId);
+                    const si = tasksMaster.findIndex(t => t.id === srcId);
+                    const ti = tasksMaster.findIndex(t => t.id === tgtId);
+                    const [moved] = tasksMaster.splice(si, 1);
+                    tasksMaster.splice(ti, 0, moved);
+                    saveSortOrder();
+                    renderAdminTaskList();
+                });
+            });
         }
 
         window.openTaskEditModal = (taskId = null) => {
