@@ -347,8 +347,10 @@
                     </div>
                     <div>
                         <label for="taskCategoryInput" class="block text-sm font-medium text-gray-700">分類</label>
-                        <input list="taskCategoryList" id="taskCategoryInput" required placeholder="選擇或輸入新分類" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
-                        <datalist id="taskCategoryList"></datalist>
+                        <select id="taskCategoryInput" required class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500">
+                            <option value="選修">選修</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">新增任務固定歸類為選修，比例依總數自動計算</p>
                     </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -628,6 +630,8 @@
                 return;
             }
             const list = currentFilter === 'all' ? tasks : tasks.filter(t => t.category === currentFilter);
+            const electiveCount = tasksMaster.filter(t => t.category === '選修').length;
+            const electiveWeight = electiveCount > 0 ? +(100 / electiveCount).toFixed(1) : 0;
             list.forEach(task => {
                 const statusText = task.status === 'completed' ? '已完成' : task.status === 'in-progress' ? '進行中' : '未開始';
                 const statusIcon = task.status === 'completed' ? '✅' : task.status === 'in-progress' ? '⏳' : '⭕';
@@ -650,7 +654,7 @@
                         <span class="text-sm ${diffColor} font-medium px-2 py-1 bg-white/10 rounded">${escHtml(task.difficulty)}</span>
                         <span class="text-sm text-purple-300">🎁 ${escHtml(task.reward || '')}</span>
                     </div>
-                    <div class="text-sm text-blue-300 mb-3">${escHtml(task.category || '')}</div>
+                    <div class="text-sm text-blue-300 mb-3">${escHtml(task.category || '')}${task.category === '選修' && electiveCount > 0 ? ` <span class="bg-yellow-500/20 text-yellow-300 text-xs px-2 py-0.5 rounded-full font-semibold">佔 ${electiveWeight}%</span>` : ''}</div>
                     <div class="bg-white/5 rounded-lg p-3 mb-3">
                         <div class="text-sm text-gray-300 mb-1">完成條件：</div>
                         <div class="text-sm text-white">${escHtml(task.completionCondition || '')}</div>
@@ -909,8 +913,16 @@
         function renderAdminTaskList() {
             const container = document.getElementById('adminTaskList');
             if (!tasksMaster.length) { container.innerHTML = '<div class="text-center text-blue-300 py-8">目前沒有任何任務</div>'; return; }
-            container.innerHTML = tasksMaster.map(t => `
-                <div class="bg-white/5 rounded-lg p-4 mb-3"><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between"><div class="flex items-center space-x-3 mb-3 sm:mb-0"><div class="text-2xl">${t.icon}</div><div><h3 class="text-white font-semibold">${escHtml(t.title)} ${t.isRequired ? '' : '<span class="text-xs text-purple-300">(選修)</span>'}</h3><p class="text-blue-200 text-sm">${escHtml(t.category)} - ${escHtml(t.difficulty)}</p></div></div><div class="flex gap-2"><button type="button" onclick="openTaskEditModal(${t.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button><button type="button" onclick="deleteMasterTask(${t.id},'${escAttr(t.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button></div></div></div>`).join('');
+            const electiveCount = tasksMaster.filter(t => t.category === '選修').length;
+            const electiveWeight = electiveCount > 0 ? +(100 / electiveCount).toFixed(1) : 0;
+            const weightNote = electiveCount > 0
+                ? `<div class="mb-3 px-3 py-2 bg-yellow-500/10 border border-yellow-400/30 rounded-lg text-yellow-300 text-sm">📊 目前共 <strong>${electiveCount}</strong> 個選修任務，每個任務佔 <strong>${electiveWeight}%</strong></div>`
+                : '';
+            container.innerHTML = weightNote + tasksMaster.map(t => {
+                const weightBadge = t.category === '選修' && electiveCount > 0
+                    ? `<span class="text-xs text-yellow-300 font-semibold"> — 佔 ${electiveWeight}%</span>` : '';
+                return `<div class="bg-white/5 rounded-lg p-4 mb-3"><div class="flex flex-col sm:flex-row items-start sm:items-center justify-between"><div class="flex items-center space-x-3 mb-3 sm:mb-0"><div class="text-2xl">${t.icon}</div><div><h3 class="text-white font-semibold">${escHtml(t.title)} ${t.isRequired ? '' : '<span class="text-xs text-purple-300">(選修)</span>'}</h3><p class="text-blue-200 text-sm">${escHtml(t.category)} - ${escHtml(t.difficulty)}${weightBadge}</p></div></div><div class="flex gap-2"><button type="button" onclick="openTaskEditModal(${t.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button><button type="button" onclick="deleteMasterTask(${t.id},'${escAttr(t.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button></div></div></div>`;
+            }).join('');
         }
 
         window.openTaskEditModal = (taskId = null) => {
@@ -946,8 +958,7 @@
         function populateDropdowns() {
             const icons = [...new Set(['📦','🏷️','🎤','✅','🗣️','💻','🔗','🎯','📊','💰','💎','🤝','👍','📈','🚀','🗺️','📘','🧙‍♂️','🌟','🚦','👁️','📋','✍️','📄','📝','🎪','👥','👔','🏆','💡','💬','🎉','📞','🏢','🛠️','⚙️','📚','🎓','💼'])];
             document.getElementById('taskIcon').innerHTML = icons.map(ic => `<option value="${ic}">${ic}</option>`).join('');
-            const cats = [...new Set(tasksMaster.map(t => t.category).filter(Boolean))];
-            document.getElementById('taskCategoryList').innerHTML = cats.map(c => `<option value="${c}"></option>`).join('');
+            // 分類固定為「選修」，無需動態建立
         }
 
         function closeTaskEditModal() { const m = document.getElementById('taskEditModal'); m.classList.add('hidden'); m.classList.remove('flex'); }
