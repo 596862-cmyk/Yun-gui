@@ -319,6 +319,21 @@
         </div>
     </div>
 
+    <!-- ═══ 批次完成 Modal ═══ -->
+    <div id="batchTaskModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-lg w-full mx-4 flex flex-col max-h-[85vh]">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-gray-800" id="batchTaskModalTitle">批次完成任務</h3>
+                <button type="button" onclick="closeBatchTaskModal()" class="text-gray-500 hover:text-gray-700 text-2xl leading-none">×</button>
+            </div>
+            <div id="batchTaskContent" class="flex-1 overflow-y-auto"></div>
+            <div class="mt-4 flex gap-3 pt-3 border-t border-gray-200">
+                <button type="button" id="batchTaskSaveBtn" onclick="saveBatchTask()" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg font-semibold transition-all">確認儲存</button>
+                <button type="button" onclick="closeBatchTaskModal()" class="px-5 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 rounded-lg font-semibold transition-all">取消</button>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══ 任務編輯 Modal ═══ -->
     <div id="taskEditModal" class="fixed inset-0 bg-black/50 modal-overlay hidden items-center justify-center z-50">
         <div class="bg-white rounded-2xl p-6 max-w-2xl max-h-[90vh] overflow-y-auto mx-4 w-full">
@@ -952,6 +967,109 @@
             showMemberManagement();
         }
 
+        // ─── 批次完成任務 ──────────────────────────────────────────────
+        let batchTaskId = null;
+        let batchAllMembers = [];
+
+        async function openBatchTaskModal(taskId) {
+            batchTaskId = taskId;
+            const tpl = tasksMaster.find(t => t.id === taskId);
+            const modal = document.getElementById('batchTaskModal');
+            const content = document.getElementById('batchTaskContent');
+            document.getElementById('batchTaskModalTitle').textContent = `批次完成：${tpl.icon} ${tpl.title}`;
+            content.innerHTML = '<div class="text-gray-600 text-center p-8">載入中...</div>';
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            const { data: members, error } = await supabaseClient.from('members').select('id, name, industry, tasks').order('name');
+            if (error) { content.innerHTML = '<div class="text-red-500 text-center p-8">載入失敗</div>'; return; }
+            batchAllMembers = members;
+            renderBatchTaskList(tpl);
+        }
+
+        function renderBatchTaskList(tpl) {
+            const content = document.getElementById('batchTaskContent');
+            content.innerHTML = `
+                <div class="mb-3 flex items-center justify-between border-b border-gray-200 pb-3">
+                    <label class="flex items-center space-x-2 cursor-pointer select-none">
+                        <input type="checkbox" id="batchSelectAll" class="w-4 h-4 accent-green-600" onchange="toggleBatchAll(this.checked)">
+                        <span class="text-gray-700 font-medium">全選 / 取消全選</span>
+                    </label>
+                    <span class="text-gray-500 text-sm">${batchAllMembers.length} 位導生</span>
+                </div>
+                <div class="space-y-1">
+                    ${batchAllMembers.map(m => {
+                        const tp = (m.tasks || []).find(t => t.id === batchTaskId) || { status: 'not-started', currentCount: 0 };
+                        const isCompleted = tp.status === 'completed';
+                        const statusLabel = tp.status === 'completed' ? '已完成' : tp.status === 'in-progress' ? '進行中' : '未開始';
+                        const statusClass = tp.status === 'completed' ? 'bg-green-100 text-green-700' : tp.status === 'in-progress' ? 'bg-yellow-100 text-yellow-700' : 'bg-gray-100 text-gray-500';
+                        const countInfo = tpl.isCountable ? ` (${tp.currentCount || 0}/${tpl.targetCount})` : '';
+                        return `<label class="flex items-center space-x-3 p-3 rounded-lg hover:bg-gray-50 cursor-pointer border border-gray-100">
+                            <input type="checkbox" value="${m.id}" ${isCompleted ? 'checked' : ''} class="batch-member-check w-4 h-4 accent-green-600">
+                            <div class="flex-1 min-w-0">
+                                <span class="text-gray-800 font-medium">${escHtml(m.name)}</span>
+                                <span class="text-gray-400 text-sm ml-1">${escHtml(m.industry)}</span>
+                            </div>
+                            <span class="text-xs px-2 py-1 rounded-full whitespace-nowrap ${statusClass}">${statusLabel}${countInfo}</span>
+                        </label>`;
+                    }).join('')}
+                </div>`;
+            const all = batchAllMembers.every(m => {
+                const tp = (m.tasks || []).find(t => t.id === batchTaskId);
+                return tp?.status === 'completed';
+            });
+            document.getElementById('batchSelectAll').checked = all;
+        }
+
+        window.toggleBatchAll = (checked) => {
+            document.querySelectorAll('.batch-member-check').forEach(cb => cb.checked = checked);
+        };
+
+        async function saveBatchTask() {
+            const tpl = tasksMaster.find(t => t.id === batchTaskId);
+            if (!tpl) return;
+            const selected = new Set([...document.querySelectorAll('.batch-member-check:checked')].map(cb => parseInt(cb.value)));
+            const btn = document.getElementById('batchTaskSaveBtn');
+            btn.disabled = true; btn.textContent = '儲存中...';
+
+            const results = await Promise.all(batchAllMembers.map(m => {
+                const tasks = JSON.parse(JSON.stringify(m.tasks || []));
+                let tp = tasks.find(t => t.id === batchTaskId);
+                if (!tp) { tp = { id: batchTaskId, status: 'not-started', currentCount: 0 }; tasks.push(tp); }
+                if (selected.has(m.id)) {
+                    tp.status = 'completed';
+                    if (tpl.isCountable) tp.currentCount = tpl.targetCount;
+                } else {
+                    if (tp.status === 'completed') {
+                        tp.status = 'not-started';
+                        if (tpl.isCountable) tp.currentCount = 0;
+                    }
+                }
+                return supabaseClient.from('members').update({ tasks }).eq('id', m.id)
+                    .then(async ({ error }) => {
+                        if (!error && selected.has(m.id)) {
+                            const p = calculateMemberProgress(tasks);
+                            if (p.percentage >= 100) {
+                                const { data: full } = await supabaseClient.from('members').select('id, graduated_at').eq('id', m.id).single();
+                                if (full && !full.graduated_at)
+                                    await supabaseClient.from('members').update({ graduated_at: new Date().toISOString() }).eq('id', m.id);
+                            }
+                        }
+                        return error;
+                    });
+            }));
+
+            const failed = results.filter(Boolean).length;
+            btn.disabled = false; btn.textContent = '確認儲存';
+            if (failed) alert(`完成，但有 ${failed} 位更新失敗`);
+            else alert(`✅ 已更新 ${batchAllMembers.length} 位導生的任務狀態`);
+            closeBatchTaskModal();
+        }
+
+        function closeBatchTaskModal() {
+            document.getElementById('batchTaskModal').classList.add('hidden');
+            document.getElementById('batchTaskModal').classList.remove('flex');
+            batchTaskId = null; batchAllMembers = [];
+        }
+
         // ─── 任務管理 ─────────────────────────────────────────────────
         async function showTaskManagement() {
             hideAdminSections('showTaskMgmtBtn');
@@ -975,7 +1093,8 @@
                                 <p class="text-blue-200 text-sm">${escHtml(t.category)} - ${escHtml(t.difficulty)}</p>
                             </div>
                         </div>
-                        <div class="flex gap-2">
+                        <div class="flex gap-2 flex-wrap">
+                            <button type="button" draggable="false" onclick="openBatchTaskModal(${t.id})" class="px-3 py-1 bg-green-600 hover:bg-green-700 text-white rounded text-sm">批次完成</button>
                             <button type="button" draggable="false" onclick="openTaskEditModal(${t.id})" class="px-3 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded text-sm">編輯</button>
                             <button type="button" draggable="false" onclick="deleteMasterTask(${t.id},'${escAttr(t.title)}')" class="px-3 py-1 bg-red-600 hover:bg-red-700 text-white rounded text-sm">刪除</button>
                         </div>
