@@ -234,6 +234,10 @@
                     <input type="text" id="newMemberName" placeholder="導生姓名" required class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <input type="text" id="newMemberIndustry" placeholder="行業別 (選填)" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
                     <input type="password" id="newMemberPassword" placeholder="設定密碼 (選填，留空表示無密碼)" class="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white placeholder-blue-200 focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-blue-200 text-sm whitespace-nowrap">入會日期</label>
+                        <input type="date" id="newMemberJoinDate" class="flex-1 px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                    </div>
                     <button type="button" id="createMemberBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg font-semibold transition-all">建立導生</button>
                 </div>
             </div>
@@ -490,7 +494,7 @@
             loadTasksFromMemberData(currentMember.tasks);
             document.getElementById('displayMemberName').textContent = currentMember.name;
             document.getElementById('memberAvatar').textContent = currentMember.name.charAt(0).toUpperCase();
-            updateMemberJoinDays(currentMember.created_at);
+            updateMemberJoinDays(currentMember.join_date || currentMember.created_at);
             document.getElementById('loginScreen').classList.add('hidden');
             document.getElementById('mainContent').classList.remove('hidden');
             generateCategoryFilters();
@@ -565,7 +569,8 @@
             if (!joinDate) { el.textContent = ''; return; }
             const days = Math.floor(Math.abs(new Date() - new Date(joinDate)) / 86400000) + 1;
             const weeks = Math.ceil(days / 7);
-            el.textContent = `您的新手村之旅已開始 ${days} 天`;
+            const dateDisplay = new Date(joinDate).toLocaleDateString('zh-TW');
+            el.textContent = `入會日期：${dateDisplay}`;
             const weeksEl = document.getElementById('joinWeeksDisplay');
             if (weeksEl) weeksEl.textContent = `第 ${weeks} 週`;
         }
@@ -731,13 +736,16 @@
 
         // ─── 登入頁排行榜 ─────────────────────────────────────────────
         async function showLoginRanking() {
-            const { data: members, error } = await supabaseClient.from('members').select('name, industry, created_at, tasks, graduated_at');
+            const { data: members, error } = await supabaseClient.from('members').select('name, industry, created_at, join_date, tasks, graduated_at');
             if (error) return;
             const ranking = [], graduated = [];
             members.forEach(m => {
                 const p = calculateMemberProgress(m.tasks);
-                const days = Math.floor(Math.abs(new Date() - new Date(m.created_at)) / 86400000) + 1;
-                const obj = { name: m.name, industry: m.industry, joinDate: m.created_at, graduationDate: m.graduated_at, joinDays: days, ...p };
+                const refDate = m.join_date || m.created_at;
+                const days = Math.floor(Math.abs(new Date() - new Date(refDate)) / 86400000) + 1;
+                const joinWeeks = Math.ceil(days / 7);
+                const joinDateDisplay = new Date(refDate).toLocaleDateString('zh-TW');
+                const obj = { name: m.name, industry: m.industry, joinDate: m.created_at, graduationDate: m.graduated_at, joinDays: days, joinWeeks, joinDateDisplay, ...p };
                 if (p.percentage >= 100) graduated.push(obj); else ranking.push(obj);
             });
             ranking.sort((a, b) => b.percentage - a.percentage || b.completedCount - a.completedCount);
@@ -757,7 +765,7 @@
             if (ranking.length) {
                 rankList.innerHTML = ranking.slice(0, 10).map((m, i) => {
                     const icon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
-                    return `<div class="bg-white/5 rounded-lg p-4 flex items-center justify-between hover:bg-white/10 transition-all"><div class="flex items-center space-x-4"><div class="text-2xl font-bold text-white w-8 text-center">${icon}</div><div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">${m.name.charAt(0).toUpperCase()}</div><div><h3 class="text-white font-semibold">${escHtml(m.name)}</h3><p class="text-blue-200 text-sm">${escHtml(m.industry)}</p><p class="text-yellow-300 text-xs">加入第 ${m.joinDays} 天</p></div></div><div class="text-right"><div class="text-2xl font-bold text-white">${m.percentage}%</div><div class="text-blue-200 text-sm">${m.completedCount}/${m.totalCount} 必修</div></div></div>`;
+                    return `<div class="bg-white/5 rounded-lg p-4 flex items-center justify-between hover:bg-white/10 transition-all"><div class="flex items-center space-x-4"><div class="text-2xl font-bold text-white w-8 text-center">${icon}</div><div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">${m.name.charAt(0).toUpperCase()}</div><div><h3 class="text-white font-semibold">${escHtml(m.name)}</h3><p class="text-blue-200 text-sm">${escHtml(m.industry)}</p><p class="text-yellow-300 text-xs">入會：${m.joinDateDisplay} · 第 ${m.joinWeeks} 週</p></div></div><div class="text-right"><div class="text-2xl font-bold text-white">${m.percentage}%</div><div class="text-blue-200 text-sm">${m.completedCount}/${m.totalCount} 必修</div></div></div>`;
                 }).join('');
                 if (ranking.length > 10) rankList.innerHTML += `<div class="text-center text-blue-300 text-sm py-2">還有 ${ranking.length - 10} 位導生未顯示...</div>`;
                 rankSection.classList.remove('hidden');
@@ -811,12 +819,15 @@
             if (ex) return alert('導生姓名已存在');
             const industry = document.getElementById('newMemberIndustry').value.trim() || 'BNI導生';
             const password = document.getElementById('newMemberPassword').value || null;
-            const { error } = await supabaseClient.from('members').insert({ name, industry, password, tasks: getInitialTasksForDB() });
+            const joinDateVal = document.getElementById('newMemberJoinDate').value;
+            const join_date = joinDateVal || null;
+            const { error } = await supabaseClient.from('members').insert({ name, industry, password, join_date, tasks: getInitialTasksForDB() });
             if (error) return alert('建立失敗：' + error.message);
-            alert(`✅ 導生 ${name} 建立成功！\n${password ? '密碼：' + password : '無密碼'}`);
+            alert(`✅ 導生 ${name} 建立成功！\n${password ? '密碼：' + password : '無密碼'}${join_date ? '\n入會日期：' + join_date : ''}`);
             document.getElementById('newMemberName').value = '';
             document.getElementById('newMemberIndustry').value = '';
             document.getElementById('newMemberPassword').value = '';
+            document.getElementById('newMemberJoinDate').value = '';
         }
 
         // ─── 排行榜（後台） ───────────────────────────────────────────
@@ -825,13 +836,16 @@
             const container = document.getElementById('adminRankingList');
             container.innerHTML = '<div class="text-white text-center p-8">載入中...</div>';
             document.getElementById('memberRankingSection').classList.remove('hidden');
-            const { data: members, error } = await supabaseClient.from('members').select('id,name,industry,created_at,tasks,graduated_at');
+            const { data: members, error } = await supabaseClient.from('members').select('id,name,industry,created_at,join_date,tasks,graduated_at');
             if (error) { container.innerHTML = `<div class="text-red-400 text-center p-8">載入失敗: ${error.message}</div>`; return; }
             const ranking = [], graduated = [];
             members.forEach(m => {
                 const p = calculateMemberProgress(m.tasks);
-                const days = Math.floor(Math.abs(new Date() - new Date(m.created_at)) / 86400000) + 1;
-                const obj = { ...m, joinDays: days, ...p };
+                const refDate = m.join_date || m.created_at;
+                const days = Math.floor(Math.abs(new Date() - new Date(refDate)) / 86400000) + 1;
+                const joinWeeks = Math.ceil(days / 7);
+                const joinDateDisplay = new Date(refDate).toLocaleDateString('zh-TW');
+                const obj = { ...m, joinDays: days, joinWeeks, joinDateDisplay, ...p };
                 if (p.percentage >= 100) graduated.push(obj); else ranking.push(obj);
             });
             ranking.sort((a, b) => b.percentage - a.percentage);
@@ -841,7 +855,7 @@
                 html += `<h3 class="text-lg font-semibold text-yellow-300 mb-3">🏆 已出村 (${graduated.length}位)</h3><div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-5">${graduated.map(m => { const d = (m.graduated_at ? new Date(m.graduated_at) : new Date(m.created_at)).toLocaleDateString('zh-TW'); return `<div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 rounded-lg p-3 border border-yellow-400/30 flex items-center space-x-3"><div class="w-8 h-8 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full flex items-center justify-center text-white font-bold text-sm">${m.name.charAt(0).toUpperCase()}</div><div><h4 class="text-yellow-200 font-semibold text-sm">${escHtml(m.name)}</h4><p class="text-yellow-300 text-xs">出村：${d}</p></div><div class="ml-auto text-yellow-300 text-lg">🎓</div></div>`; }).join('')}</div>`;
             }
             if (ranking.length) {
-                html += `<h3 class="text-lg font-semibold text-white mb-3">📊 進行中 (${ranking.length}位)</h3><div class="space-y-3">${ranking.map((m, i) => { const icon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1; return `<div class="bg-white/5 rounded-lg p-4 flex items-center justify-between"><div class="flex items-center space-x-4"><div class="text-2xl font-bold text-white w-8 text-center">${icon}</div><div><h3 class="text-white font-semibold">${escHtml(m.name)}</h3><p class="text-blue-200 text-sm">${escHtml(m.industry)}</p><p class="text-yellow-300 text-xs">加入第 ${m.joinDays} 天</p></div></div><div class="text-right"><div class="text-2xl font-bold text-white">${m.percentage}%</div><div class="text-blue-200 text-sm">${m.completedCount}/${m.totalCount} 必修</div></div></div>`; }).join('')}</div>`;
+                html += `<h3 class="text-lg font-semibold text-white mb-3">📊 進行中 (${ranking.length}位)</h3><div class="space-y-3">${ranking.map((m, i) => { const icon = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1; return `<div class="bg-white/5 rounded-lg p-4 flex items-center justify-between"><div class="flex items-center space-x-4"><div class="text-2xl font-bold text-white w-8 text-center">${icon}</div><div><h3 class="text-white font-semibold">${escHtml(m.name)}</h3><p class="text-blue-200 text-sm">${escHtml(m.industry)}</p><p class="text-yellow-300 text-xs">入會：${m.joinDateDisplay} · 第 ${m.joinWeeks} 週</p></div></div><div class="text-right"><div class="text-2xl font-bold text-white">${m.percentage}%</div><div class="text-blue-200 text-sm">${m.completedCount}/${m.totalCount} 必修</div></div></div>`; }).join('')}</div>`;
             }
             if (!html) html = '<div class="text-center text-blue-300 py-8">目前沒有任何導生資料</div>';
             container.innerHTML = html;
