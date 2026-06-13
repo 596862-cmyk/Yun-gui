@@ -971,7 +971,7 @@
         let batchTaskId = null;
         let batchAllMembers = [];
 
-        async function openBatchTaskModal(taskId) {
+        window.openBatchTaskModal = async (taskId) => {
             batchTaskId = taskId;
             const tpl = tasksMaster.find(t => t.id === taskId);
             const modal = document.getElementById('batchTaskModal');
@@ -983,7 +983,7 @@
             if (error) { content.innerHTML = '<div class="text-red-500 text-center p-8">載入失敗</div>'; return; }
             batchAllMembers = members;
             renderBatchTaskList(tpl);
-        }
+        };
 
         function renderBatchTaskList(tpl) {
             const content = document.getElementById('batchTaskContent');
@@ -1023,7 +1023,7 @@
             document.querySelectorAll('.batch-member-check').forEach(cb => cb.checked = checked);
         };
 
-        async function saveBatchTask() {
+        window.saveBatchTask = async () => {
             const tpl = tasksMaster.find(t => t.id === batchTaskId);
             if (!tpl) return;
             const selected = new Set([...document.querySelectorAll('.batch-member-check:checked')].map(cb => parseInt(cb.value)));
@@ -1064,11 +1064,11 @@
             closeBatchTaskModal();
         }
 
-        function closeBatchTaskModal() {
+        window.closeBatchTaskModal = () => {
             document.getElementById('batchTaskModal').classList.add('hidden');
             document.getElementById('batchTaskModal').classList.remove('flex');
             batchTaskId = null; batchAllMembers = [];
-        }
+        };
 
         // ─── 任務管理 ─────────────────────────────────────────────────
         async function showTaskManagement() {
