@@ -1192,7 +1192,7 @@
                 fbUrl: document.getElementById('taskFbUrl').value || null,
                 courseUrl: document.getElementById('taskCourseUrl').value || null,
                 weeklyTopics: document.getElementById('taskWeeklyTopics').value || null,
-                isRequired: document.getElementById('taskIsRequired').checked,
+                isRequired: document.getElementById('taskCategoryInput').value === '必修',
                 isCountable: document.getElementById('taskIsCountable').checked,
                 targetCount: document.getElementById('taskIsCountable').checked ? parseInt(document.getElementById('taskTargetCount').value) : 1,
             };
