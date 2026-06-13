@@ -144,7 +144,7 @@
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                 <div class="bg-green-500/20 rounded-lg p-3 text-center">
                     <div class="text-2xl font-bold text-green-300" id="completedTasks">0</div>
                     <div class="text-green-200 text-base">已攻克</div>
@@ -160,6 +160,10 @@
                 <div class="bg-purple-500/20 rounded-lg p-3 text-center">
                     <div class="text-2xl font-bold text-purple-300" id="totalTasks">0</div>
                     <div class="text-purple-200 text-base">必修關卡</div>
+                </div>
+                <div class="bg-teal-500/20 rounded-lg p-3 text-center col-span-2 md:col-span-1">
+                    <div class="text-2xl font-bold text-teal-300" id="joinWeeksDisplay">—</div>
+                    <div class="text-teal-200 text-base">入會週數</div>
                 </div>
             </div>
         </div>
@@ -560,7 +564,10 @@
             const el = document.getElementById('joinDaysDisplay');
             if (!joinDate) { el.textContent = ''; return; }
             const days = Math.floor(Math.abs(new Date() - new Date(joinDate)) / 86400000) + 1;
+            const weeks = Math.ceil(days / 7);
             el.textContent = `您的新手村之旅已開始 ${days} 天`;
+            const weeksEl = document.getElementById('joinWeeksDisplay');
+            if (weeksEl) weeksEl.textContent = `第 ${weeks} 週`;
         }
 
         function calculateMemberProgress(memberTasks) {
