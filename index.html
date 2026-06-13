@@ -565,18 +565,12 @@
 
         function calculateMemberProgress(memberTasks) {
             if (!memberTasks || !tasksMaster.length) return { completedCount: 0, totalCount: 0, percentage: 0, completed: 0, inProgress: 0 };
-            let done = 0, total = 0, mspDone = false;
+            let done = 0, total = 0;
             const completed = memberTasks.filter(t => t.status === 'completed').length;
             const inProgress = memberTasks.filter(t => t.status === 'in-progress').length;
             tasksMaster.filter(t => t.isRequired).forEach(tpl => {
                 const mt = memberTasks.find(x => x.id === tpl.id);
-                if (tpl.id === 14 || tpl.id === 15) {
-                    if (!mspDone) {
-                        total++;
-                        if (memberTasks.some(x => (x.id === 14 || x.id === 15) && x.status === 'completed')) done++;
-                        mspDone = true;
-                    }
-                } else if (tpl.isCountable) {
+                if (tpl.isCountable) {
                     total++; done += (mt?.currentCount || 0) / tpl.targetCount;
                 } else {
                     total++; if (mt?.status === 'completed') done++;
@@ -599,8 +593,7 @@
             const inProgress = tasks.filter(t => t.status === 'in-progress').length;
             const notStarted = tasks.filter(t => t.status === 'not-started').length;
             const p = calculateMemberProgress(tasks);
-            const mspAdj = tasksMaster.some(t => t.id === 14 || t.id === 15) ? 1 : 0;
-            document.getElementById('totalTasks').textContent = tasksMaster.filter(t => t.isRequired).length - mspAdj;
+            document.getElementById('totalTasks').textContent = tasksMaster.filter(t => t.isRequired).length;
             document.getElementById('completedCount').textContent = `${p.completedCount}/${p.totalCount}`;
             document.getElementById('completedTasks').textContent = completed;
             document.getElementById('inProgressTasks').textContent = inProgress;
@@ -638,8 +631,7 @@
             container.appendChild(allBtn);
             const reqCount = tasksMaster.filter(t => t.isRequired).length;
             const optCount = tasksMaster.filter(t => !t.isRequired).length;
-            const mspAdj = tasksMaster.some(t => t.id === 14 || t.id === 15) ? 1 : 0;
-            allBtn.textContent = `全部 (${reqCount - mspAdj}必修+${optCount}選修)`;
+            allBtn.textContent = `全部 (${reqCount}必修+${optCount}選修)`;
             cats.forEach(cat => {
                 const count = tasksMaster.filter(t => t.category === cat).length;
                 const btn = document.createElement('button');
