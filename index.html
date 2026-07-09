@@ -126,6 +126,29 @@
                 </div>
             </div>
 
+            <!-- 小工具區塊 -->
+            <div class="mb-8">
+                <div class="bg-white/10 backdrop-blur-lg rounded-2xl p-6 border border-white/20">
+                    <h2 class="text-2xl font-bold text-white mb-4 text-center">🛠️ 實用小工具</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <button type="button" onclick="openTrafficLightCalc()" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl p-4 text-left transition-all group">
+                            <div class="text-4xl">🚦</div>
+                            <div>
+                                <div class="text-white font-semibold text-base group-hover:text-green-300 transition-colors">紅綠燈計算機</div>
+                                <div class="text-blue-200 text-sm mt-0.5">計算個人 KPI 得分與燈號</div>
+                            </div>
+                        </button>
+                        <button type="button" onclick="openGoalsCalc()" class="flex items-center gap-4 bg-white/10 hover:bg-white/20 border border-white/20 rounded-xl p-4 text-left transition-all group">
+                            <div class="text-4xl">🎯</div>
+                            <div>
+                                <div class="text-white font-semibold text-base group-hover:text-red-300 transition-colors">年度目標設定</div>
+                                <div class="text-blue-200 text-sm mt-0.5">計算每週所需一對一次數</div>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 已出村導生 -->
             <div id="graduatedMembersSection" class="mb-8 hidden">
                 <div class="bg-gradient-to-r from-yellow-500/20 to-orange-500/20 backdrop-blur-lg rounded-2xl p-6 border border-yellow-400/30">
