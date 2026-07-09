@@ -695,6 +695,13 @@
     (function () {
         'use strict';
 
+        // ─── 網域鎖定 ─────────────────────────────────────────────────
+        const ALLOWED_HOSTS = ['596862-cmyk.github.io', 'localhost', '127.0.0.1'];
+        if (!ALLOWED_HOSTS.includes(window.location.hostname)) {
+            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif;color:#666;font-size:14px;">此系統不授權在此網域使用</div>';
+            throw new Error('Unauthorized domain');
+        }
+
         const SUPABASE_URL = 'https://hdssnsnkagfjfbuvgfkn.supabase.co';
         const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imhkc3Nuc25rYWdmamZidXZnZmtuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTc2MjAyMDksImV4cCI6MjA3MzE5NjIwOX0.UoSKuEbguyE-I2j8gRO_mclOffwkV6WFLwayjrkFsuY';
         const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
