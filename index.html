@@ -368,6 +368,114 @@
         </div>
     </div>
 
+    <!-- ═══ 引薦目標計算機 Modal ═══ -->
+    <div id="goalsCalcModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-3">
+        <div class="bg-gray-50 rounded-2xl w-full max-w-lg max-h-[92vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center px-5 py-3 bg-red-600 rounded-t-2xl flex-shrink-0">
+                <h3 class="text-lg font-bold text-white">🎯 引薦目標設定計算機</h3>
+                <button type="button" onclick="closeGoalsCalc()" class="text-white/80 hover:text-white text-2xl leading-none">×</button>
+            </div>
+            <div class="overflow-y-auto flex-1 p-4 space-y-2">
+                <!-- 摘要 -->
+                <div id="bg-summary" class="hidden bg-red-50 border-2 border-red-300 rounded-xl p-4 text-center mb-2">
+                    <div class="text-sm text-red-700 font-medium mb-1">根據您的目標，每週需進行</div>
+                    <div class="text-5xl font-bold text-red-600" id="bg-h-big">—</div>
+                    <div class="text-base text-red-600 font-medium mt-1">次一對一</div>
+                    <div class="text-xs text-gray-500 mt-2">每年 <span class="font-semibold text-gray-700" id="bg-g-sum">—</span> 次一對一 &nbsp;·&nbsp; 需 <span class="font-semibold text-gray-700" id="bg-e-sum">—</span> 張引薦單</div>
+                </div>
+                <!-- A -->
+                <div class="bg-white rounded-xl p-3 border border-gray-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">A</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">預計在BNI獲得的年營業額</div>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="bg-a" placeholder="200" min="0" class="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200">
+                            <span class="text-gray-500 text-sm">萬元</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- B -->
+                <div class="bg-white rounded-xl p-3 border border-gray-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">B</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">每筆交易平均金額</div>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="bg-b" placeholder="5" min="0.01" step="0.1" class="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200">
+                            <span class="text-gray-500 text-sm">萬元</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- C -->
+                <div class="bg-indigo-50 rounded-xl p-3 border border-indigo-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">C</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">必須完成案件數 <span class="text-indigo-400 ml-1">A ÷ B</span></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-indigo-600" id="bg-c">—</span>
+                            <span class="text-gray-500 text-sm">件</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- D -->
+                <div class="bg-white rounded-xl p-3 border border-gray-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">D</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">成交率</div>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="bg-d" placeholder="25" min="1" max="100" class="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200">
+                            <span class="text-gray-500 text-sm">%</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- E -->
+                <div class="bg-indigo-50 rounded-xl p-3 border border-indigo-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">E</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">所需引薦單數 <span class="text-indigo-400 ml-1">C ÷ D</span></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-indigo-600" id="bg-e">—</span>
+                            <span class="text-gray-500 text-sm">張</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- F -->
+                <div class="bg-white rounded-xl p-3 border border-gray-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-red-600 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">F</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">每次一對一平均產生引薦單數</div>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="bg-f" placeholder="1.5" min="0.1" step="0.1" class="w-28 px-2 py-1.5 border border-gray-300 rounded-lg text-gray-800 text-sm focus:outline-none focus:border-red-400 focus:ring-1 focus:ring-red-200">
+                            <span class="text-gray-500 text-sm">張</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- G -->
+                <div class="bg-indigo-50 rounded-xl p-3 border border-indigo-200 flex items-center gap-3">
+                    <div class="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center text-white font-bold text-sm flex-shrink-0">G</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-gray-500 mb-1">每年一對一次數 <span class="text-indigo-400 ml-1">E ÷ F</span></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-2xl font-bold text-indigo-600" id="bg-g">—</span>
+                            <span class="text-gray-500 text-sm">次</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- H -->
+                <div class="bg-red-600 rounded-xl p-4 flex items-center gap-3">
+                    <div class="w-9 h-9 bg-white rounded-full flex items-center justify-center text-red-600 font-bold flex-shrink-0">H</div>
+                    <div class="flex-1">
+                        <div class="text-xs text-red-200 mb-1">每週一對一次數 <span class="ml-1">G ÷ 50</span></div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-3xl font-bold text-white" id="bg-h">—</span>
+                            <span class="text-red-200 text-base">次 / 週</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="text-xs text-gray-400 text-center pb-1">以每年 50 個有效週計算</div>
+            </div>
+        </div>
+    </div>
+
     <!-- ═══ 紅綠燈計算機 Modal ═══ -->
     <div id="trafficLightModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center z-50 p-3">
         <div class="bg-[#f5f5f0] rounded-2xl w-full max-w-3xl max-h-[92vh] flex flex-col shadow-2xl">
@@ -859,7 +967,8 @@
                         ${task.courseUrl ? `<div class="mt-2"><button type="button" class="external-link-btn text-sm text-blue-300 hover:text-blue-200" data-url="${escHtml(task.courseUrl)}">📚 前往課程報名</button></div>` : ''}
                     </div>
                     <div class="flex space-x-2">${actionBtns}</div>
-                    ${task.title.includes('紅綠燈') ? `<button type="button" onclick="openTrafficLightCalc()" class="mt-2 w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-all">🚦 開啟紅綠燈計算機</button>` : ''}`;
+                    ${task.title.includes('紅綠燈') ? `<button type="button" onclick="openTrafficLightCalc()" class="mt-2 w-full py-2 px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-all">🚦 開啟紅綠燈計算機</button>` : ''}
+                    ${task.title.includes('目標') ? `<button type="button" onclick="openGoalsCalc()" class="mt-2 w-full py-2 px-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-all">🎯 開啟目標設定計算機</button>` : ''}`;
                 container.appendChild(card);
             });
             bindTaskEvents();
@@ -1202,6 +1311,44 @@
             if (failed) alert(`完成，但有 ${failed} 位更新失敗`);
             else alert(`✅ 已更新 ${batchAllMembers.length} 位導生的任務狀態`);
             closeBatchTaskModal();
+        }
+
+        // ─── 引薦目標計算機 ───────────────────────────────────────────
+        let bniGoalInited = false;
+        window.openGoalsCalc = () => {
+            const modal = document.getElementById('goalsCalcModal');
+            modal.classList.remove('hidden'); modal.classList.add('flex');
+            if (!bniGoalInited) { initBNIGoal(); bniGoalInited = true; }
+        };
+        window.closeGoalsCalc = () => {
+            const modal = document.getElementById('goalsCalcModal');
+            modal.classList.add('hidden'); modal.classList.remove('flex');
+        };
+        function initBNIGoal() {
+            const modal = document.getElementById('goalsCalcModal');
+            function gi(id) { return modal.querySelector('#bg-' + id); }
+            function gv(id) { return parseFloat(gi(id).value) || 0; }
+            function fmt(n) { return Number.isFinite(n) ? (n === Math.round(n) ? n.toString() : n.toFixed(1)) : '—'; }
+            function update() {
+                const a = gv('a'), b = gv('b'), d = gv('d'), f = gv('f');
+                const c = b > 0 ? a / b : null;
+                const e = c !== null && d > 0 ? c / (d / 100) : null;
+                const g = e !== null && f > 0 ? e / f : null;
+                const h = g !== null ? g / 50 : null;
+                gi('c').textContent = c !== null ? fmt(c) : '—';
+                gi('e').textContent = e !== null ? fmt(e) : '—';
+                gi('g').textContent = g !== null ? fmt(g) : '—';
+                gi('h').textContent = h !== null ? h.toFixed(1) : '—';
+                if (h !== null && a > 0) {
+                    gi('h-big').textContent = h.toFixed(1);
+                    gi('g-sum').textContent = fmt(g);
+                    gi('e-sum').textContent = fmt(e);
+                    gi('summary').classList.remove('hidden');
+                } else {
+                    gi('summary').classList.add('hidden');
+                }
+            }
+            modal.querySelectorAll('input').forEach(el => el.addEventListener('input', update));
         }
 
         // ─── 紅綠燈計算機 ─────────────────────────────────────────────
